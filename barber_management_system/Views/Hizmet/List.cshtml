@@ -1,0 +1,30 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<barber_management_system.Models.Hizmet>
+<h1>Hizmetler</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Ad</th>
+            <th>Fiyat</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hizmet in Model)
+        {
+            <tr>
+                <td>@hizmet.HizmetID</td>
+                <td>@hizmet.HizmetAd</td>
+                <td>@hizmet.Fiyat</td>
+                <td><a class="btn btn-primary" asp-controller="Hizmet" asp-action="Edit" asp-route-id="@hizmet.HizmetID">Edit</a></td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<td><a class="btn btn-primary" asp-controller="Hizmet" asp-action="Add">Add</a></td>

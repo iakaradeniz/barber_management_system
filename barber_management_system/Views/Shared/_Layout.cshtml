@@ -25,6 +25,23 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="hizmetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Hizmet İşlemleri
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="hizmetDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="Add">Add Hizmet</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="List">Tüm Hizmetler</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="Edit">Edit Hizmet</a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                 </div>
             </div>
