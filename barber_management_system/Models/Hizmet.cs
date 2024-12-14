@@ -2,14 +2,18 @@
 {
     public class Hizmet
     {
-        public int HizmetId { get; set; }
-        public string HizmetAdi { get; set; }
+        public int HizmetID { get; set; }
+        public string HizmetAd { get; set; }
         public decimal Fiyat { get; set; }
 
-        // Hizmetin çalışanlarla ilişkisi
-        public List<CalisanHizmet> Calisanlar { get; set; }
-        public List<CalisanUzmanlik> Uzmanliklar { get; set; }
+        // Hizmeti veren çalışanlar (Many-to-Many)
+        public List<CalisanHizmet> calisanhizmetlist { get; set; }
 
-        public List<Randevu> Randevular { get; set; }
+        // Uzmanlık yapan çalışanlar (Many-to-Many)
+        public List<CalisanUzmanlik> CalisanUzmanliklist { get; set; }
+
+        // Randevular (One-to-Many)
+        public List<Randevu> randevulist { get; set; }
     }
+
 }

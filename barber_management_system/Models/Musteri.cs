@@ -5,6 +5,6 @@
         public int MusteriID { get; set; }
         public string MusteriAd { get; set; }
         public string MusteriSoyAd {  get; set; } 
-        public List<Randevu> Randevular {  get; set; }
+        public List<Randevu> randevulist {  get; set; }
     }
 }

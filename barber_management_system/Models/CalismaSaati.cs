@@ -9,6 +9,11 @@
         public DayOfWeek Gun { get; set; }  // Pazartesi, Salı, Çarşamba vb.
 
         public int CalisanId { get; set; }
-        public Calisan calisan { get; set; }    
+      
+
+        public List<Randevu> randevulist { get; set; }
+
+        public List<CalisanCalismaSaati> calisanCalismaSaatiList { get; set; }
+
     }
 }
