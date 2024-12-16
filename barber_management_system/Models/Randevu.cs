@@ -12,8 +12,8 @@
         public int CalisanId { get; set; }
         public Calisan calisan { get; set; }
 
-        public int CalismaSaatiId { get; set; }
-        public CalismaSaati calismasaati { get; set;}
+        //public int CalismaSaatiId { get; set; }
+        //public CalismaSaati calismasaati { get; set;}
     }
 
     

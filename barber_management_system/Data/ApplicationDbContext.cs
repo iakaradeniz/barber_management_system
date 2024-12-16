@@ -13,10 +13,11 @@ namespace barber_management_system.Data
 
         public DbSet<CalisanHizmet> CalisanHizmetler { get; set; }
         public DbSet<CalisanUzmanlik> CalisanUzmanliklar { get; set; }
-        public DbSet<CalismaSaati> CalismaSaati { get; set; }
         public DbSet<Hizmet> Hizmetler { get; set; }
         public DbSet<Musteri> Musteriler { get; set; }
         public DbSet<Randevu> Randevular { get; set; }
+
+        public DbSet<CalismaSaati> CalismaSaatleri { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
@@ -103,11 +104,11 @@ namespace barber_management_system.Data
                 .WithMany(h => h.randevulist)
                 .HasForeignKey(r => r.HizmetId);
 
-            // Randevu - CalismaSaati (One-to-Many)
-            modelBuilder.Entity<Randevu>()
-                .HasOne(r => r.calismasaati)
-                .WithMany(cs => cs.randevulist)
-                .HasForeignKey(r => r.CalismaSaatiId);
+            //// Randevu - CalismaSaati (One-to-Many)
+            //modelBuilder.Entity<Randevu>()
+            //    .HasOne(r => r.calismasaati)
+            //    .WithMany(cs => cs.randevulist)
+            //    .HasForeignKey(r => r.CalismaSaatiId);
 
             // Calisan - UzmanlikAlanlari (Many-to-Many with Hizmet)
             modelBuilder.Entity<CalisanUzmanlik>()
@@ -137,20 +138,20 @@ namespace barber_management_system.Data
                 .WithMany(h => h.calisanhizmetlist)
                 .HasForeignKey(ch => ch.HizmetId);
 
-            // Calisan - CalisanCalismaSaati (Many-to-Many)
-            modelBuilder.Entity<CalisanCalismaSaati>()
-                .HasKey(ccs => new { ccs.CalisanId, ccs.CalismaSaatiId }); // Composite Key
+            // Çalışan ile ÇalışmaSaatleri arasında bire çok ilişki
+            //modelBuilder.Entity<Calisan>()
+            //    .HasMany(c => c.CalismaSaatleri) // Bir çalışanın birden fazla çalışma saati olabilir
+            //    .WithOne(cs => cs.Calisan) // Her çalışma saati bir çalışana bağlıdır
+            //    .HasForeignKey(cs => cs.CalisanId) // Yabancı anahtar CalismaSaati üzerinde
+            //    .OnDelete(DeleteBehavior.Cascade); // Çalışan silinirse çalışma saatleri de silinsin
 
-            modelBuilder.Entity<CalisanCalismaSaati>()
-                .HasOne(ccs => ccs.calisan)
-                .WithMany(c => c.calisanCalismaSaatiList)
-                .HasForeignKey(ccs => ccs.CalisanId);
-
-            modelBuilder.Entity<CalisanCalismaSaati>()
-                .HasOne(ccs => ccs.calismaSaati)
-                .WithMany(cs => cs.calisanCalismaSaatiList)
-                .HasForeignKey(ccs => ccs.CalismaSaatiId);
+        //    modelBuilder.Entity<Calisan>()
+        //.HasMany(c => c)
+        //.WithOne(cs => cs.Calisan)
+        //.HasForeignKey(cs => cs.CalisanId)
+        //.OnDelete(DeleteBehavior.Cascade); // Çalışan silindiğinde çalışma saatleri de silinir
         }
+
 
 
 

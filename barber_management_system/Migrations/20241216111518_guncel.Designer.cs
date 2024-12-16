@@ -12,8 +12,8 @@ using barber_management_system.Data;
 namespace barber_management_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241214151749_Entity_Relationship")]
-    partial class Entity_Relationship
+    [Migration("20241216111518_guncel")]
+    partial class guncel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,21 +44,6 @@ namespace barber_management_system.Migrations
                     b.HasKey("CalisanID");
 
                     b.ToTable("Calisanlar");
-                });
-
-            modelBuilder.Entity("barber_management_system.Models.CalisanCalismaSaati", b =>
-                {
-                    b.Property<int>("CalisanId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CalismaSaatiId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CalisanId", "CalismaSaatiId");
-
-                    b.HasIndex("CalismaSaatiId");
-
-                    b.ToTable("CalisanCalismaSaati");
                 });
 
             modelBuilder.Entity("barber_management_system.Models.CalisanHizmet", b =>
@@ -113,7 +98,9 @@ namespace barber_management_system.Migrations
 
                     b.HasKey("CalismaSaatiID");
 
-                    b.ToTable("CalismaSaati");
+                    b.HasIndex("CalisanId");
+
+                    b.ToTable("CalismaSaatleri");
                 });
 
             modelBuilder.Entity("barber_management_system.Models.Hizmet", b =>
@@ -168,9 +155,6 @@ namespace barber_management_system.Migrations
                     b.Property<int>("CalisanId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CalismaSaatiId")
-                        .HasColumnType("int");
-
                     b.Property<int>("HizmetId")
                         .HasColumnType("int");
 
@@ -181,32 +165,11 @@ namespace barber_management_system.Migrations
 
                     b.HasIndex("CalisanId");
 
-                    b.HasIndex("CalismaSaatiId");
-
                     b.HasIndex("HizmetId");
 
                     b.HasIndex("MusteriId");
 
                     b.ToTable("Randevular");
-                });
-
-            modelBuilder.Entity("barber_management_system.Models.CalisanCalismaSaati", b =>
-                {
-                    b.HasOne("barber_management_system.Models.Calisan", "calisan")
-                        .WithMany("calisanCalismaSaatiList")
-                        .HasForeignKey("CalisanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("barber_management_system.Models.CalismaSaati", "calismaSaati")
-                        .WithMany("calisanCalismaSaatiList")
-                        .HasForeignKey("CalismaSaatiId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("calisan");
-
-                    b.Navigation("calismaSaati");
                 });
 
             modelBuilder.Entity("barber_management_system.Models.CalisanHizmet", b =>
@@ -247,17 +210,22 @@ namespace barber_management_system.Migrations
                     b.Navigation("Hizmet");
                 });
 
+            modelBuilder.Entity("barber_management_system.Models.CalismaSaati", b =>
+                {
+                    b.HasOne("barber_management_system.Models.Calisan", "Calisan")
+                        .WithMany("CalismaSaatleri")
+                        .HasForeignKey("CalisanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Calisan");
+                });
+
             modelBuilder.Entity("barber_management_system.Models.Randevu", b =>
                 {
                     b.HasOne("barber_management_system.Models.Calisan", "calisan")
                         .WithMany("randevulist")
                         .HasForeignKey("CalisanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("barber_management_system.Models.CalismaSaati", "calismasaati")
-                        .WithMany("randevulist")
-                        .HasForeignKey("CalismaSaatiId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -275,8 +243,6 @@ namespace barber_management_system.Migrations
 
                     b.Navigation("calisan");
 
-                    b.Navigation("calismasaati");
-
                     b.Navigation("hizmet");
 
                     b.Navigation("musteri");
@@ -284,18 +250,11 @@ namespace barber_management_system.Migrations
 
             modelBuilder.Entity("barber_management_system.Models.Calisan", b =>
                 {
-                    b.Navigation("calisanCalismaSaatiList");
+                    b.Navigation("CalismaSaatleri");
 
                     b.Navigation("calisanhizmetlist");
 
                     b.Navigation("calisanuzmanliklist");
-
-                    b.Navigation("randevulist");
-                });
-
-            modelBuilder.Entity("barber_management_system.Models.CalismaSaati", b =>
-                {
-                    b.Navigation("calisanCalismaSaatiList");
 
                     b.Navigation("randevulist");
                 });

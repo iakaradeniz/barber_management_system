@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace barber_management_system.Migrations
 {
     /// <inheritdoc />
-    public partial class Entity_Relationship : Migration
+    public partial class guncel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,22 +23,6 @@ namespace barber_management_system.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Calisanlar", x => x.CalisanID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CalismaSaati",
-                columns: table => new
-                {
-                    CalismaSaatiID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BaslangicSaati = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BitisSaati = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Gun = table.Column<int>(type: "int", nullable: false),
-                    CalisanId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CalismaSaati", x => x.CalismaSaatiID);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,26 +54,24 @@ namespace barber_management_system.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CalisanCalismaSaati",
+                name: "CalismaSaatleri",
                 columns: table => new
                 {
-                    CalisanId = table.Column<int>(type: "int", nullable: false),
-                    CalismaSaatiId = table.Column<int>(type: "int", nullable: false)
+                    CalismaSaatiID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BaslangicSaati = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BitisSaati = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Gun = table.Column<int>(type: "int", nullable: false),
+                    CalisanId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CalisanCalismaSaati", x => new { x.CalisanId, x.CalismaSaatiId });
+                    table.PrimaryKey("PK_CalismaSaatleri", x => x.CalismaSaatiID);
                     table.ForeignKey(
-                        name: "FK_CalisanCalismaSaati_Calisanlar_CalisanId",
+                        name: "FK_CalismaSaatleri_Calisanlar_CalisanId",
                         column: x => x.CalisanId,
                         principalTable: "Calisanlar",
                         principalColumn: "CalisanID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CalisanCalismaSaati_CalismaSaati_CalismaSaatiId",
-                        column: x => x.CalismaSaatiId,
-                        principalTable: "CalismaSaati",
-                        principalColumn: "CalismaSaatiID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -149,8 +131,7 @@ namespace barber_management_system.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MusteriId = table.Column<int>(type: "int", nullable: false),
                     HizmetId = table.Column<int>(type: "int", nullable: false),
-                    CalisanId = table.Column<int>(type: "int", nullable: false),
-                    CalismaSaatiId = table.Column<int>(type: "int", nullable: false)
+                    CalisanId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,12 +141,6 @@ namespace barber_management_system.Migrations
                         column: x => x.CalisanId,
                         principalTable: "Calisanlar",
                         principalColumn: "CalisanID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Randevular_CalismaSaati_CalismaSaatiId",
-                        column: x => x.CalismaSaatiId,
-                        principalTable: "CalismaSaati",
-                        principalColumn: "CalismaSaatiID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Randevular_Hizmetler_HizmetId",
@@ -182,11 +157,6 @@ namespace barber_management_system.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CalisanCalismaSaati_CalismaSaatiId",
-                table: "CalisanCalismaSaati",
-                column: "CalismaSaatiId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CalisanHizmetler_HizmetId",
                 table: "CalisanHizmetler",
                 column: "HizmetId");
@@ -197,14 +167,14 @@ namespace barber_management_system.Migrations
                 column: "HizmetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Randevular_CalisanId",
-                table: "Randevular",
+                name: "IX_CalismaSaatleri_CalisanId",
+                table: "CalismaSaatleri",
                 column: "CalisanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Randevular_CalismaSaatiId",
+                name: "IX_Randevular_CalisanId",
                 table: "Randevular",
-                column: "CalismaSaatiId");
+                column: "CalisanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Randevular_HizmetId",
@@ -221,22 +191,19 @@ namespace barber_management_system.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CalisanCalismaSaati");
-
-            migrationBuilder.DropTable(
                 name: "CalisanHizmetler");
 
             migrationBuilder.DropTable(
                 name: "CalisanUzmanliklar");
 
             migrationBuilder.DropTable(
+                name: "CalismaSaatleri");
+
+            migrationBuilder.DropTable(
                 name: "Randevular");
 
             migrationBuilder.DropTable(
                 name: "Calisanlar");
-
-            migrationBuilder.DropTable(
-                name: "CalismaSaati");
 
             migrationBuilder.DropTable(
                 name: "Hizmetler");

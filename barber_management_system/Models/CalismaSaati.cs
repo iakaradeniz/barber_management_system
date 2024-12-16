@@ -8,12 +8,13 @@
 
         public DayOfWeek Gun { get; set; }  // Pazartesi, Salı, Çarşamba vb.
 
-        public int CalisanId { get; set; }
-      
+        //public List<Randevu> randevulist { get; set; }
 
-        public List<Randevu> randevulist { get; set; }
+        // Çalışan ile ilişki
+        public int CalisanId { get; set; } // Foreign Key
+        public Calisan Calisan { get; set; }
 
-        public List<CalisanCalismaSaati> calisanCalismaSaatiList { get; set; }
+
 
     }
 }

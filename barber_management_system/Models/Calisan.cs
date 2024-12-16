@@ -12,8 +12,10 @@
         // Uzmanlık alanları (Many-to-Many)
         public List<CalisanUzmanlik> calisanuzmanliklist { get; set; }
 
-        // Çalışma saatleri (Many-to-Many)
-        public List<CalisanCalismaSaati> calisanCalismaSaatiList { get; set; }
+        // Haftanın her günü için çalışma saatlerini tutan ilişki
+        public List<CalismaSaati> CalismaSaatleri { get; set; }
+
+
 
         // Randevular (One-to-Many)
         public List<Randevu> randevulist { get; set; }
