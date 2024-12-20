@@ -48,8 +48,8 @@ namespace barber_management_system.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int Id)
         {
-            var students = await dbContext.Hizmetler.FindAsync(Id);
-            return View(students);
+            var hizmet = await dbContext.Hizmetler.FindAsync(Id);
+            return View(hizmet);
         }
 
         [HttpPost]

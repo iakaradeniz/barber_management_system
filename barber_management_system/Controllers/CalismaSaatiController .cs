@@ -2,12 +2,11 @@
 using barber_management_system.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace barber_management_system.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CalismaSaatiController : Controller
+    public class CalismaSaatiController:Controller
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -15,6 +14,8 @@ namespace barber_management_system.Controllers
         {
             _dbContext = dbContext;
         }
+
+       
 
         // Çalışma saatlerini listele
         [HttpGet]
@@ -82,6 +83,62 @@ namespace barber_management_system.Controllers
 
             return Ok("Çalışma saati başarıyla silindi.");
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //[HttpGet]
+        //public async Task<ActionResult<List<CalismaSaati>>> Get(int CalisanId)
+        //{
+        //    var calismasaatleri = await _dbContext.CalismaSaatleri
+        //        .Where(c => c.CalisanId == CalisanId)
+        //        .ToListAsync();
+
+        //    return calismasaatleri;
+        //}
+
+        //[HttpPost]
+        //public async Task<ActionResult<List<CalismaSaati>>> Add(CalismaSaati calismaSaati)
+        //{
+        //    var calisan = await _dbContext.Calisanlar.FindAsync(calismaSaati.CalisanId);
+        //    if(calisan == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _dbContext.CalismaSaatleri.Add(calismaSaati);
+        //    await _dbContext.SaveChangesAsync();
+
+        //    return await Get(calismaSaati.CalisanId);
+        //}
+
     }
 
 }

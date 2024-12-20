@@ -13,12 +13,12 @@
         public List<CalisanUzmanlik> calisanuzmanliklist { get; set; }
 
         // Haftanın her günü için çalışma saatlerini tutan ilişki
-        public List<CalismaSaati> CalismaSaatleri { get; set; }
+        public List<CalismaSaati>? CalismaSaatleri { get; set; }
 
 
 
         // Randevular (One-to-Many)
-        public List<Randevu> randevulist { get; set; }
+        public List<Randevu>? randevulist { get; set; }
     }
 
 }

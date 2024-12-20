@@ -138,6 +138,12 @@ namespace barber_management_system.Data
                 .WithMany(h => h.calisanhizmetlist)
                 .HasForeignKey(ch => ch.HizmetId);
 
+            modelBuilder.Entity<CalismaSaati>()
+       .HasOne(cs => cs.Calisan)
+       .WithMany(c => c.CalismaSaatleri)
+       .HasForeignKey(cs => cs.CalisanId)
+       .OnDelete(DeleteBehavior.Cascade);  // Cascade silme etkinleştiriliyor
+
             // Çalışan ile ÇalışmaSaatleri arasında bire çok ilişki
             //modelBuilder.Entity<Calisan>()
             //    .HasMany(c => c.CalismaSaatleri) // Bir çalışanın birden fazla çalışma saati olabilir
@@ -145,11 +151,11 @@ namespace barber_management_system.Data
             //    .HasForeignKey(cs => cs.CalisanId) // Yabancı anahtar CalismaSaati üzerinde
             //    .OnDelete(DeleteBehavior.Cascade); // Çalışan silinirse çalışma saatleri de silinsin
 
-        //    modelBuilder.Entity<Calisan>()
-        //.HasMany(c => c)
-        //.WithOne(cs => cs.Calisan)
-        //.HasForeignKey(cs => cs.CalisanId)
-        //.OnDelete(DeleteBehavior.Cascade); // Çalışan silindiğinde çalışma saatleri de silinir
+            //    modelBuilder.Entity<Calisan>()
+            //.HasMany(c => c)
+            //.WithOne(cs => cs.Calisan)
+            //.HasForeignKey(cs => cs.CalisanId)
+            //.OnDelete(DeleteBehavior.Cascade); // Çalışan silindiğinde çalışma saatleri de silinir
         }
 
 
