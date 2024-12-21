@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using barber_management_system.Data;
 
@@ -11,9 +12,11 @@ using barber_management_system.Data;
 namespace barber_management_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241221160229_mig1")]
+    partial class mig1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace barber_management_system.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "74353541-a227-43da-8cf4-67bf93c2ce36",
+                            Id = "99398e26-c499-4ad4-b4da-aab4b16096b1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "8c56f3a5-afad-4911-b252-83002871d2b6",
+                            Id = "fdad3bb2-24b5-4804-ab29-8bd96140276c",
                             Name = "Calisan",
                             NormalizedName = "CALISAN"
                         },
                         new
                         {
-                            Id = "eb3e0b7d-2ce6-43e5-8d15-eeff39ad353c",
+                            Id = "c8c657ef-588f-48fb-91a4-a5ec62717ff2",
                             Name = "Musteri",
                             NormalizedName = "MUSTERI"
                         });

@@ -1,11 +1,13 @@
 ﻿using barber_management_system.Data;
 using barber_management_system.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace barber_management_system.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CalismaSaatiController:Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -59,11 +61,7 @@ namespace barber_management_system.Controllers
                 return NotFound("Çalışan bulunamadı.");
             }
 
-            //// Aynı gün için çakışma kontrolü
-            //var isOverlapping = await _dbContext.CalismaSaatleri
-            //    .AnyAsync(cs => cs.CalisanId == calisanId && cs.Gun == calismaSaati.Gun &&
-            //                    calismaSaati.BaslangicSaati < cs.BitisSaati && calismaSaati.BitisSaati > cs.BaslangicSaati);
-
+          
             // Aynı gün için çakışma kontrolü (sadece saat ve dakika dikkate alınarak)
             var isOverlapping = await _dbContext.CalismaSaatleri
                 .AnyAsync(cs => cs.CalisanId == calisanId && cs.Gun == calismaSaati.Gun &&
@@ -178,48 +176,6 @@ namespace barber_management_system.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //// Yeni çalışma saati ekle
-        //[HttpPost("{calisanId}")]
-        //public async Task<IActionResult> AddCalismaSaati(int calisanId, [FromBody] CalismaSaati calismaSaati)
-        //{
-        //    var calisan = await _dbContext.Calisanlar.FindAsync(calisanId);
-        //    if (calisan == null) return NotFound("Çalışan bulunamadı.");
-
-        //    // Aynı gün için çakışma kontrolü
-        //    var existingCalismaSaatleri = await _dbContext.CalismaSaatleri
-        //        .Where(cs => cs.CalisanId == calisanId && cs.Gun == calismaSaati.Gun)
-        //        .ToListAsync();
-
-        //    bool isOverlapping = existingCalismaSaatleri.Any(cs =>
-        //        calismaSaati.BaslangicSaati < cs.BitisSaati && calismaSaati.BitisSaati > cs.BaslangicSaati);
-
-        //    if (isOverlapping)
-        //    {
-        //        return BadRequest("Bu gün için çalışma saatleri çakışıyor.");
-        //    }
-
-        //    calismaSaati.CalisanId = calisanId;
-
-        //    await _dbContext.CalismaSaatleri.AddAsync(calismaSaati);
-        //    await _dbContext.SaveChangesAsync();
-
-        //    return Ok("Çalışma saati başarıyla eklendi.");
-        //}
-
         // Çalışma saati güncelle
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCalismaSaati(int id, [FromBody] CalismaSaati calismaSaati)
@@ -249,61 +205,5 @@ namespace barber_management_system.Controllers
             return Ok("Çalışma saati başarıyla silindi.");
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //[HttpGet]
-        //public async Task<ActionResult<List<CalismaSaati>>> Get(int CalisanId)
-        //{
-        //    var calismasaatleri = await _dbContext.CalismaSaatleri
-        //        .Where(c => c.CalisanId == CalisanId)
-        //        .ToListAsync();
-
-        //    return calismasaatleri;
-        //}
-
-        //[HttpPost]
-        //public async Task<ActionResult<List<CalismaSaati>>> Add(CalismaSaati calismaSaati)
-        //{
-        //    var calisan = await _dbContext.Calisanlar.FindAsync(calismaSaati.CalisanId);
-        //    if(calisan == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _dbContext.CalismaSaatleri.Add(calismaSaati);
-        //    await _dbContext.SaveChangesAsync();
-
-        //    return await Get(calismaSaati.CalisanId);
-        //}
-
     }
-
 }

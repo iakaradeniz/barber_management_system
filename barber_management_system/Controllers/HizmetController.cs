@@ -1,10 +1,12 @@
 ﻿using barber_management_system.Data;
 using barber_management_system.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace barber_management_system.Controllers
 {
+    
     public class HizmetController : Controller
     {
         private readonly ApplicationDbContext dbContext;
@@ -18,6 +20,7 @@ namespace barber_management_system.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Add()
         {
             return View();
@@ -46,6 +49,7 @@ namespace barber_management_system.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int Id)
         {
             var hizmet = await dbContext.Hizmetler.FindAsync(Id);

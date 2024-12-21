@@ -59,7 +59,7 @@
                             </ul>
                         </li>
 
-                        
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="musteriDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Musteri İşlemleri
@@ -82,14 +82,33 @@
                                 Çalışma Saati Yönetimi
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="saatDropdown">
-                                
+
                                 <li>
                                     <a class="dropdown-item" asp-area="" asp-controller="CalismaSaati" asp-action="List">Çalışma Çizelgesi</a>
                                 </li>
-                                
+
                             </ul>
                         </li>
 
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                                    <button type="submit" class="btn btn-link nav-link text-dark">Yönetici Çıkış</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
