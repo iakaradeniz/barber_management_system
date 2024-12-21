@@ -7,12 +7,12 @@ namespace barber_management_system.Models
     {
         public int CalismaSaatiId { get; set; }
         //[Required(ErrorMessage = "Gün bilgisi gereklidir.")]
-        public DayOfWeek? Gun { get; set; }
+        public DayOfWeek Gun { get; set; }
 
         //[Required(ErrorMessage = "Başlangıç saati gereklidir.")]
-        public DateTime? BaslangicSaati { get; set; }
+        public DateTime BaslangicSaati { get; set; }
 
         //[Required(ErrorMessage = "Bitiş saati gereklidir.")]
-        public DateTime? BitisSaati { get; set; }
+        public DateTime BitisSaati { get; set; }
     }
 }

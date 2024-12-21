@@ -1,0 +1,55 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<barber_management_system.Models.Calisan>
+
+
+
+@{
+    ViewData["Title"] = "Çalışma Saatleri Listesi";
+}
+
+<h2>Çalışma Saatleri Listesi</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Çalışan ID</th>
+            <th>Çalışma Saati ID</th>
+            <th>Çalışan Adı</th>
+            <th>Çalışan Soyadı</th>
+            <th>Gün</th>
+            <th>Başlangıç Saati</th>
+            <th>Bitiş Saati</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var calisan in Model)
+        {
+            if (calisan.CalismaSaatleri != null && calisan.CalismaSaatleri.Any())
+            {
+                foreach (var saat in calisan.CalismaSaatleri)
+                {
+                    <tr>
+                        <td>@calisan.CalisanID</td>
+                        <td>@saat.CalismaSaatiID</td>
+                        <td>@calisan.CalisanAd</td>
+                        <td>@calisan.CalisanSoyad</td>
+                        <td>@saat.Gun</td>
+                        <td>@saat.BaslangicSaati.ToString("HH:mm")</td>
+                        <td>@saat.BitisSaati.ToString("HH:mm")</td>
+                        <td>
+                            <a href="@Url.Action("Add", "CalismaSaati", new { calisanId = calisan.CalisanID })" class="btn btn-success">Yeni Çalışma Saati Ekle (@calisan.CalisanAd @calisan.CalisanSoyad)</a>
+                            <a href="@Url.Action("Edit", "CalismaSaati", new { calismaSaatiId = saat.CalismaSaatiID , calisanId = calisan.CalisanID })" class="btn btn-primary btn-sm">Güncelle</a>
+                            <a href="@Url.Action("Delete", "CalismaSaati", new { id = saat.CalismaSaatiID })" class="btn btn-danger btn-sm">Sil</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+

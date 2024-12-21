@@ -129,15 +129,6 @@ namespace barber_management_system.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
         [HttpPost]
         public async Task<IActionResult> Delete(Calisan viewmodel)
         {
@@ -164,7 +155,6 @@ namespace barber_management_system.Controllers
             if (calisan == null) return NotFound("Çalışan bulunamadı.");
 
             return Ok(calisan);
-
 
         }
 
