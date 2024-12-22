@@ -15,6 +15,11 @@ namespace barber_management_system.Controllers
             _signInManager = signInManager;
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [HttpGet]
         public IActionResult Register()
         {

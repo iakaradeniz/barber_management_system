@@ -12,7 +12,7 @@ using barber_management_system.Data;
 namespace barber_management_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241221160229_mig1")]
+    [Migration("20241222155915_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -50,26 +50,6 @@ namespace barber_management_system.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "99398e26-c499-4ad4-b4da-aab4b16096b1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "fdad3bb2-24b5-4804-ab29-8bd96140276c",
-                            Name = "Calisan",
-                            NormalizedName = "CALISAN"
-                        },
-                        new
-                        {
-                            Id = "c8c657ef-588f-48fb-91a4-a5ec62717ff2",
-                            Name = "Musteri",
-                            NormalizedName = "MUSTERI"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -257,6 +237,13 @@ namespace barber_management_system.Migrations
 
                     b.Property<string>("CalisanSoyad")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CalisanID");

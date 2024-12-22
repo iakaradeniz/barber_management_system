@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/barber_management_system.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/barber_management_system.styles.css" asp-append-version="true" />
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -125,8 +128,22 @@
             &copy; 2024 - barber_management_system - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!-- JavaScript Dosyaları -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Select2 Initialize Script -->
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Hizmet seçiniz...",
+                allowClear: true,  // X işareti ile seçimleri temizleme özelliği
+                width: '100%'
+            });
+        });
+    </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

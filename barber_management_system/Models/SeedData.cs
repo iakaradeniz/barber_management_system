@@ -1,37 +1,55 @@
 ﻿using barber_management_system.Data;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace barber_management_system.Models
+public static class SeedData
 {
-    public static class SeedData
+    public static async Task Initialize(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
     {
-        public static async Task Initialize(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        // Rolleri tanımla
+        string[] roleNames = { "Admin", "Calisan", "Musteri" };
+
+        // Her bir rolü kontrol et, yoksa oluştur
+        foreach (var roleName in roleNames)
         {
-            // Admin rolünü kontrol et, yoksa oluştur
-            if (!await roleManager.RoleExistsAsync("Admin"))
+            if (!await roleManager.RoleExistsAsync(roleName))
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                if (!roleResult.Succeeded)
+                {
+                    throw new Exception($"{roleName} rolü oluşturulurken bir hata oluştu: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+                }
+            }
+        }
+
+        // Admin kullanıcıları tanımla
+        var adminUsers = new[]
+        {
+            new { Email = "admin@example.com", Password = "Admin123*" }
+        };
+
+        foreach (var admin in adminUsers)
+        {
+            var user = await userManager.FindByEmailAsync(admin.Email);
+            if (user == null)
+            {
+                user = new IdentityUser { UserName = admin.Email, Email = admin.Email };
+                var createResult = await userManager.CreateAsync(user, admin.Password);
+
+                if (!createResult.Succeeded)
+                {
+                    throw new Exception($"Admin kullanıcısı {admin.Email} oluşturulurken bir hata oluştu: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+                }
             }
 
-            // Admin kullanıcıları tanımla
-            var adminUsers = new[]
+            if (!await userManager.IsInRoleAsync(user, "Admin"))
             {
-                new { Email = "admin@example.com", Password = "Admin123" }
-               
-            };
-
-            foreach (var admin in adminUsers)
-            {
-                if (await userManager.FindByEmailAsync(admin.Email) == null)
+                var addToRoleResult = await userManager.AddToRoleAsync(user, "Admin");
+                if (!addToRoleResult.Succeeded)
                 {
-                    var adminUser = new IdentityUser { UserName = admin.Email, Email = admin.Email };
-                    var result = await userManager.CreateAsync(adminUser, admin.Password);
-
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(adminUser, "Admin");
-                    }
+                    throw new Exception($"Admin kullanıcısı {admin.Email} rolüne eklenirken bir hata oluştu: {string.Join(", ", addToRoleResult.Errors.Select(e => e.Description))}");
                 }
             }
         }

@@ -12,8 +12,8 @@ using barber_management_system.Data;
 namespace barber_management_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241221160327_mig2")]
-    partial class mig2
+    [Migration("20241222184216_mig4")]
+    partial class mig4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,26 +50,6 @@ namespace barber_management_system.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "74353541-a227-43da-8cf4-67bf93c2ce36",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "8c56f3a5-afad-4911-b252-83002871d2b6",
-                            Name = "Calisan",
-                            NormalizedName = "CALISAN"
-                        },
-                        new
-                        {
-                            Id = "eb3e0b7d-2ce6-43e5-8d15-eeff39ad353c",
-                            Name = "Musteri",
-                            NormalizedName = "MUSTERI"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -256,6 +236,17 @@ namespace barber_management_system.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CalisanSoyad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

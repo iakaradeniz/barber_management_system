@@ -1,27 +1,58 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model barber_management_system.Models.CalisanViewModel
+
 @{
+    ViewData["Title"] = "Yeni Çalışan Ekle";
 }
 
-@model barber_management_system.Models.CalisanViewModel
+<h1>Yeni Çalışan Ekle</h1>
 
-<h1>Çalışan Ekle</h1>
-<form method="post">
-
-    <div class="mt-3">
-        <label class="form-label">Ad</label>
-        <input type="text" class="form-control" asp-for="CalisanAd" />
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">
+        @ViewBag.Message
     </div>
+}
+else
+{
+    <form asp-action="Add" method="post">
+        <div class="form-group">
+            <label asp-for="CalisanAd" class="control-label"></label>
+            <input asp-for="CalisanAd" class="form-control" />
+            <span asp-validation-for="CalisanAd" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CalisanSoyad" class="control-label"></label>
+            <input asp-for="CalisanSoyad" class="form-control" />
+            <span asp-validation-for="CalisanSoyad" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="SelectedHizmetler" class="control-label">Hizmetler</label>
+            <select asp-for="SelectedHizmetler" class="form-control select2" multiple>
+                @foreach (var hizmet in Model.Hizmetler)
+                {
+                    <option value="@hizmet.HizmetID"
+                            selected="@Model.SelectedHizmetler.Contains(hizmet.HizmetID)">
+                        @hizmet.HizmetAd
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password" class="control-label"></label>
+            <input asp-for="Password" class="form-control" type="password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Kaydet" class="btn btn-primary" />
+        </div>
+    </form>
 
-    <div class="mt-3">
-        <label class="form-label">Soyad</label>
-        <input type="text" class="form-control" asp-for="CalisanSoyad" />
-    </div>
-
-
-    <div class="mt-3">
-        <button type="submit" class="btn btn-primary" asp-controller="Calisan" asp-action="Add">Save</button>
-    </div>
-
-</form>
+    @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    }
+}

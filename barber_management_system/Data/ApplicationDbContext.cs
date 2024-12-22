@@ -28,11 +28,11 @@ namespace barber_management_system.Data
         {
             base.OnModelCreating(modelBuilder);
             // Rolleri oluştur
-            modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Name = "Calisan", NormalizedName = "CALISAN" },
-                new IdentityRole { Name = "Musteri", NormalizedName = "MUSTERI" }
-            );
+            //modelBuilder.Entity<IdentityRole>().HasData(
+            //    new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
+            //    new IdentityRole { Name = "Calisan", NormalizedName = "CALISAN" },
+            //    new IdentityRole { Name = "Musteri", NormalizedName = "MUSTERI" }
+            //);
             // Randevu - Musteri (One-to-Many)
             modelBuilder.Entity<Randevu>()
                 .HasOne(r => r.musteri)

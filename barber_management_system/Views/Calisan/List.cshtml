@@ -5,7 +5,7 @@
 }
 
 
-@model List<barber_management_system.Models.Calisan>
+@* @model List<barber_management_system.Models.Calisan>
 
 <h1>Çalışanlar</h1>
 <table class="table">
@@ -32,4 +32,74 @@
         }
     </tbody>
 </table>
-<td><a class="btn btn-primary" asp-controller="Calisan" asp-action="Add">Add</a></td>
+<td><a class="btn btn-primary" asp-controller="Calisan" asp-action="Add">Add</a></td> *@
+
+@model List<barber_management_system.Models.Calisan>
+@{
+    var successMessage = TempData["SuccessMessage"];
+    var errorMessage = TempData["ErrorMessage"];
+    if (successMessage != null)
+    {
+        <div class="alert alert-success">
+            @successMessage
+        </div>
+    }
+
+    if (errorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+}
+
+@{
+    ViewData["Title"] = "Çalışan Listesi";
+}
+
+<h1>Çalışan Listesi</h1>
+
+
+<p>
+    <a asp-action="Add" class="btn btn-primary">Yeni Çalışan Ekle</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>CalisanId</th>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Email</th>
+            <th>Sifre</th>
+            <th>Hizmetler</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var calisan in Model)
+        {
+            <tr>
+                <td>@calisan.CalisanID</td>
+                <td>@calisan.CalisanAd</td>
+                <td>@calisan.CalisanSoyad</td>
+                <td>@calisan.Email</td>
+                <td>@calisan.Sifre</td>
+                <td>
+                    <ul>
+                        @foreach (var calisanHizmet in calisan.calisanhizmetlist)
+                        {
+                            <li>@calisanHizmet.Hizmet.HizmetAd</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="Calisan" asp-action="Edit" asp-route-id="@calisan.CalisanID">Edit</a>
+                    <a class="btn btn-primary" asp-controller="CalismaSaati" asp-action="Add" asp-route-id="@calisan.CalisanID">Çalışma Saati Ekle</a>
+                    <a href="@Url.Action("Delete", "Calisan", new { id = calisan.CalisanID })" class="btn btn-danger btn-sm">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

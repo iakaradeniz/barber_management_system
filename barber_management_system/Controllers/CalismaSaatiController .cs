@@ -154,7 +154,7 @@ namespace barber_management_system.Controllers
 
 
         // Çalışma saati sil
-        [HttpGet("Delete/{id}")]
+        [HttpGet("/CalismaSaati/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var calismaSaati = await _dbContext.CalismaSaatleri.FindAsync(id);

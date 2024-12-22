@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace barber_management_system.Migrations
 {
     /// <inheritdoc />
@@ -59,7 +57,9 @@ namespace barber_management_system.Migrations
                     CalisanID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CalisanAd = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CalisanSoyad = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CalisanSoyad = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdentityUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -301,16 +301,6 @@ namespace barber_management_system.Migrations
                         principalTable: "Musteriler",
                         principalColumn: "MusteriID",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "99398e26-c499-4ad4-b4da-aab4b16096b1", null, "Admin", "ADMIN" },
-                    { "c8c657ef-588f-48fb-91a4-a5ec62717ff2", null, "Musteri", "MUSTERI" },
-                    { "fdad3bb2-24b5-4804-ab29-8bd96140276c", null, "Calisan", "CALISAN" }
                 });
 
             migrationBuilder.CreateIndex(
