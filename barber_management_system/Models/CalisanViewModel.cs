@@ -23,8 +23,12 @@ namespace barber_management_system.Models
         // Çalışanın sunduğu hizmetler
         public List<Hizmet> Hizmetler { get; set; }= new List<Hizmet>();
 
+        public List<Hizmet> Uzmanlıklar { get; set; } = new List<Hizmet>();
+
         // Seçilen hizmetlerin ID'lerini tutacak property
         public List<int>? SelectedHizmetler { get; set; } = new List<int>();
+
+        public List<int>? SelectedUzmanlık { get; set; } = new List<int>();
 
     }
 

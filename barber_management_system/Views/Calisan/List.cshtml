@@ -73,6 +73,7 @@
             <th>Email</th>
             <th>Sifre</th>
             <th>Hizmetler</th>
+            <th>Uzmanlıklar</th>
             <th></th>
             <th></th>
         </tr>
@@ -94,6 +95,16 @@
                         }
                     </ul>
                 </td>
+
+                <td>
+                    <ul>
+                        @foreach (var calisanUzman in calisan.calisanuzmanliklist)
+                        {
+                            <li>@calisanUzman.Hizmet.HizmetAd</li>
+                        }
+                    </ul>
+                </td>
+
                 <td>
                     <a class="btn btn-primary" asp-controller="Calisan" asp-action="Edit" asp-route-id="@calisan.CalisanID">Edit</a>
                     <a class="btn btn-primary" asp-controller="CalismaSaati" asp-action="Add" asp-route-id="@calisan.CalisanID">Çalışma Saati Ekle</a>

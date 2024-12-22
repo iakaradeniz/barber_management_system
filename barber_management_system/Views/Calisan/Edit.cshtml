@@ -47,6 +47,20 @@ else{}
             }
         </select>
     </div>
+
+    <div class="form-group">
+        <label for="SelectedUzmanlık" class="control-label">Uzmanlıklar</label>
+        <select asp-for="SelectedUzmanlık" class="form-control select2" multiple>
+            <option value="">Uzmanlık Seçiniz</option>
+            @foreach (var hizmet in ViewBag.AvailableHizmetler)
+            {
+                <option value="@hizmet.HizmetID"
+                        selected="@Model.SelectedUzmanlık.Contains(hizmet.HizmetID)">
+                    @hizmet.HizmetAd
+                </option>
+            }
+        </select>
+    </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary ms-3" asp-controller="Calisan" asp-action="Edit" asp-route-id="@Model.CalisanId">Çalışan Güncelle</button>
     </div>

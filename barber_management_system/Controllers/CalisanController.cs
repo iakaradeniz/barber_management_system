@@ -26,7 +26,9 @@ namespace barber_management_system.Controllers
             var viewModel = new CalisanViewModel
             {
                 SelectedHizmetler = new List<int>(),
-                Hizmetler = _dbContext.Hizmetler.ToList()
+                SelectedUzmanlık = new List<int>(),
+                Hizmetler = _dbContext.Hizmetler.ToList(),
+                Uzmanlıklar = _dbContext.Hizmetler.ToList()
             };
 
             if (!viewModel.Hizmetler.Any())
@@ -43,6 +45,7 @@ namespace barber_management_system.Controllers
         public async Task<IActionResult> Add(CalisanViewModel model)
         {
             model.Hizmetler = _dbContext.Hizmetler.ToList();
+           
 
             if (!ModelState.IsValid)
             {
@@ -80,6 +83,15 @@ namespace barber_management_system.Controllers
                     }
                 }
 
+                foreach (var hizmetId in model.SelectedUzmanlık)
+                {
+                    var hizmet = await _dbContext.Hizmetler.FindAsync(hizmetId);
+                    if (hizmet != null)
+                    {
+                        calisan.calisanuzmanliklist.Add(new CalisanUzmanlik { Calisan = calisan, Hizmet = hizmet });
+                    }
+                }
+
                 await _dbContext.Calisanlar.AddAsync(calisan);
                 await _dbContext.SaveChangesAsync();
 
@@ -104,6 +116,8 @@ namespace barber_management_system.Controllers
             var calisanlar = await _dbContext.Calisanlar
                 .Include(c => c.calisanhizmetlist)
                 .ThenInclude(ch => ch.Hizmet)
+                .Include(calisanlar => calisanlar.calisanuzmanliklist)
+                .ThenInclude(calisanuzmanliklist => calisanuzmanliklist.Hizmet)
                 .ToListAsync();
             return View(calisanlar);
         }
@@ -116,6 +130,8 @@ namespace barber_management_system.Controllers
             // Veritabanından çalışan bilgilerini ve ilişkili hizmetleri getir
             var calisan = await _dbContext.Calisanlar
                  .Include(c => c.calisanhizmetlist)
+                 .ThenInclude(ch => ch.Hizmet)
+                 .Include(c => c.calisanuzmanliklist)
                  .ThenInclude(ch => ch.Hizmet)
                  .FirstOrDefaultAsync(c => c.CalisanID == calisanId);
 
@@ -139,7 +155,9 @@ namespace barber_management_system.Controllers
                 CalisanSoyad = calisan.CalisanSoyad,
                 Email = user.Email,
                 Hizmetler = calisan.calisanhizmetlist.Select(ch => ch.Hizmet).ToList(),
-                SelectedHizmetler = calisan.calisanhizmetlist.Select(ch => ch.HizmetId).ToList()
+                Uzmanlıklar = calisan.calisanuzmanliklist.Select(ch => ch.Hizmet).ToList(),
+                SelectedHizmetler = calisan.calisanhizmetlist.Select(ch => ch.HizmetId).ToList(),
+                SelectedUzmanlık = calisan.calisanuzmanliklist.Select(ch => ch.HizmetId).ToList()   
             };
 
             // Mevcut hizmetleri getir ve ViewBag'e ekle
@@ -181,6 +199,7 @@ namespace barber_management_system.Controllers
                 // Çalışanı veritabanından bul
                 var calisan = await _dbContext.Calisanlar
                     .Include(c => c.calisanhizmetlist)
+                    .Include(c => c.calisanuzmanliklist)
                     .FirstOrDefaultAsync(c => c.CalisanID == model.CalisanId);
 
                 if (calisan == null)
@@ -205,6 +224,7 @@ namespace barber_management_system.Controllers
                 {
                     user.Email = model.Email;
                     user.UserName = model.Email;
+
                     var updateResult = await _userManager.UpdateAsync(user);
 
                     if (!updateResult.Succeeded)
@@ -254,6 +274,19 @@ namespace barber_management_system.Controllers
                     }
                 }
 
+                // Çalışanın uzmanlık listesini güncelle
+                calisan.calisanuzmanliklist.Clear();
+                if (model.SelectedUzmanlık != null)
+                {
+                    foreach (var hizmetId in model.SelectedUzmanlık)
+                    {
+                        calisan.calisanuzmanliklist.Add(new CalisanUzmanlik
+                        {
+                            HizmetId = hizmetId
+                        });
+                    }
+                }
+
                 // Değişiklikleri kaydet ve transaction'ı tamamla
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -270,43 +303,7 @@ namespace barber_management_system.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(CalisanViewModel viewModel)
-        //{
-        //    var calisan = await _dbContext.Calisanlar.FindAsync(viewModel.CalisanId);
-        //    if (calisan is not null)
-        //    {
-        //        // Ad ve soyad kontrolü
-        //        if (_dbContext.Calisanlar.Any(c => c.CalisanAd == viewModel.CalisanAd && c.CalisanSoyad == viewModel.CalisanSoyad && c.CalisanID != viewModel.CalisanId))
-        //        {
-        //            ModelState.AddModelError("", "Bu ad ve soyadla başka bir çalışan mevcut.");
-        //            return View(viewModel);
-        //        }
-        //        else
-        //        {
-        //            calisan.CalisanAd = viewModel.CalisanAd;
-        //            calisan.CalisanSoyad = viewModel.CalisanSoyad;
-        //            // Değişiklikleri kaydet
-        //            await _dbContext.SaveChangesAsync();
-
-        //            // Identity kullanıcısını güncelle
-        //            var user = await _userManager.FindByIdAsync(calisan.IdentityUserId);
-        //            if (user != null)
-        //            {
-        //                user.UserName = viewModel.Email;
-        //                user.Email = viewModel.Email;
-        //                var result = await _userManager.UpdateAsync(user);
-
-        //                if (result.Succeeded && !string.IsNullOrEmpty(viewModel.Password))
-        //                {
-        //                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //                    await _userManager.ResetPasswordAsync(user, token, viewModel.Password);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return RedirectToAction("List", "Calisan");
-        //}
+       
 
 
 
@@ -354,6 +351,7 @@ namespace barber_management_system.Controllers
             var calisan = await _dbContext.Calisanlar
                 .Include(c => c.CalismaSaatleri) // Çalışma saatlerini dahil et
                 .Include(c => c.calisanhizmetlist).ThenInclude(ch => ch.Hizmet)
+                .Include(c => c.calisanuzmanliklist).ThenInclude(ch => ch.Hizmet)
                 .FirstOrDefaultAsync(c => c.CalisanID == id);
 
             if (calisan == null) return NotFound("Çalışan bulunamadı.");
