@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace barber_management_system.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Calisan")]
     public class CalisanController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -19,7 +19,7 @@ namespace barber_management_system.Controllers
             _dbContext = dbContext;
             _userManager = userManager;
         }
-        //Çalışıyor
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Add()
         {

@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using barber_management_system.Models;
+using barber_management_system.Data;
 
 namespace barber_management_system.Controllers
 {
+    //Burası 
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public IActionResult AccessDenied()
@@ -36,6 +40,20 @@ namespace barber_management_system.Controllers
 
                 if (result.Succeeded)
                 {
+                    // Kullanıcıyı varsayılan olarak "Musteri" rolüne atıyoruz
+                    await _userManager.AddToRoleAsync(user, "Musteri");
+
+                    // Müşteri bilgilerini kaydediyoruz
+                    var musteri = new Musteri
+                    {
+                        MusteriAd = model.Ad,
+                        MusteriSoyAd = model.Soyad,
+                        IdentityUserId = user.Id
+                    };
+
+                    _context.Musteriler.Add(musteri);
+                    await _context.SaveChangesAsync();
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -63,7 +81,25 @@ namespace barber_management_system.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    // Kullanıcının rolünü kontrol et
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Contains("Admin"))
+                    {
+                        // Admin için admin paneline yönlendir
+                        return RedirectToAction("Index", "AdminPanel");
+                    }
+                    else if (roles.Contains("Calisan"))
+                    {
+                        // Çalışan için çalışan paneline yönlendir
+                        return RedirectToAction("Index", "CalisanPanel");
+                    }
+                    else if (roles.Contains("Musteri"))
+                    {
+                        // Müşteri için ana sayfaya yönlendir
+                        return RedirectToAction("Index", "Home");
+                    }
+                    //return RedirectToAction("Index", "Home");
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");

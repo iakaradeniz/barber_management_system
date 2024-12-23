@@ -6,6 +6,8 @@
         public string HizmetAd { get; set; }
         public decimal Fiyat { get; set; }
 
+        public int Dakika { get; set; } // Dakika cinsinden
+
         // Hizmeti veren çalışanlar (Many-to-Many)
         public List<CalisanHizmet> calisanhizmetlist { get; set; }
 

@@ -2,6 +2,7 @@
 {
     public class Musteri
     {
+        public string IdentityUserId { get; set; }
         public int MusteriID { get; set; }
         public string MusteriAd { get; set; }
         public string MusteriSoyAd {  get; set; } 

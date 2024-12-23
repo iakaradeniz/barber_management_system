@@ -4,6 +4,8 @@ namespace barber_management_system.Models
 {
     public class RegisterViewModel
     {
+        public string Ad { get; set; }
+        public string Soyad { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }

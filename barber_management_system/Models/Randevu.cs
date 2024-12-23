@@ -12,9 +12,18 @@
         public int CalisanId { get; set; }
         public Calisan calisan { get; set; }
 
-        //public int CalismaSaatiId { get; set; }
-        //public CalismaSaati calismasaati { get; set;}
+        public bool OnayDurumu { get; set; } = false;  // Varsayılan olarak onaysız
+        public DateTime OlusturmaTarihi { get; set; } = DateTime.Now;
+        public RandevuDurumu Durum { get; set; } = RandevuDurumu.Beklemede;
+    }
+    public enum RandevuDurumu
+    {
+        Beklemede,
+        Onaylandi,
+        Reddedildi,
+        Tamamlandi,
+        Iptal
     }
 
-    
+
 }
