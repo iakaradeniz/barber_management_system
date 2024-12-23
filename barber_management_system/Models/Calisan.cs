@@ -2,10 +2,11 @@
 {
     public class Calisan
     {
+       
         public int CalisanID { get; set; }
         public string CalisanAd { get; set; }
         public string CalisanSoyad { get; set; }
-        public string? IdentityUserId { get; set; } // Identity kullanıcı kimliği
+        public string IdentityUserId { get; set; } // Identity kullanıcı kimliği
 
         public string Email { get; set; }
 

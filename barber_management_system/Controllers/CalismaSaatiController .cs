@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace barber_management_system.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class CalismaSaatiController:Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -17,9 +17,10 @@ namespace barber_management_system.Controllers
             _dbContext = dbContext;
         }
 
-       
+
 
         // Çalışma saatlerini listele
+        [Authorize(Roles = "Calisan,Admin")]
         [HttpGet]
         public async Task<IActionResult> List()
         {
@@ -31,6 +32,7 @@ namespace barber_management_system.Controllers
 
 
         // GET: CalismaSaati/Add/{calisanId}
+        [Authorize(Roles = "Admin")]
         [HttpGet("CalismaSaati/Add/{calisanId}")]
         public IActionResult Add(int calisanId)
         {
@@ -52,6 +54,7 @@ namespace barber_management_system.Controllers
 
 
         // POST: CalismaSaati/Add/{calisanId}
+        [Authorize(Roles = "Admin")]
         [HttpPost("CalismaSaati/Add/{calisanId}")]
         public async Task<IActionResult> Add(int calisanId, [FromForm] CalismaSaati calismaSaati)
         {
@@ -101,7 +104,7 @@ namespace barber_management_system.Controllers
             return RedirectToAction("List", "CalismaSaati"); // Listeleme sayfasına yönlendir
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("CalismaSaati/Edit/{calismaSaatiId}/{calisanId}")]
         public IActionResult Edit(int calismaSaatiId,int calisanId)
         {
@@ -121,6 +124,7 @@ namespace barber_management_system.Controllers
 
 
         // POST: CalismaSaati/Edit/{calisanId}
+        [Authorize(Roles = "Admin")]
         [HttpPost("CalismaSaati/Edit/{calismaSaatiId}/{calisanId}")]
         public async Task<IActionResult> Edit(int calismaSaatiId,int calisanId, [FromForm] CalismaSaati vievModel)
         {
@@ -154,6 +158,7 @@ namespace barber_management_system.Controllers
 
 
         // Çalışma saati sil
+        [Authorize(Roles = "Admin")]
         [HttpGet("/CalismaSaati/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -177,6 +182,7 @@ namespace barber_management_system.Controllers
 
 
         // Çalışma saati güncelle
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCalismaSaati(int id, [FromBody] CalismaSaati calismaSaati)
         {
@@ -193,6 +199,7 @@ namespace barber_management_system.Controllers
         }
 
         // Çalışma saati sil
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCalismaSaati(int id)
         {

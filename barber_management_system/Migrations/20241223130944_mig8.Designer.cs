@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using barber_management_system.Data;
 
@@ -11,9 +12,11 @@ using barber_management_system.Data;
 namespace barber_management_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241223130944_mig8")]
+    partial class mig8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,7 +244,6 @@ namespace barber_management_system.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sifre")
@@ -318,8 +320,8 @@ namespace barber_management_system.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HizmetID"));
 
-                    b.Property<decimal>("Dakika")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Dakika")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Fiyat")
                         .HasColumnType("decimal(18,2)");
@@ -341,10 +343,6 @@ namespace barber_management_system.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MusteriID"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("IdentityUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -354,10 +352,6 @@ namespace barber_management_system.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MusteriSoyAd")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sifre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -6,6 +6,8 @@
         public string Ad { get; set; }
 
         public decimal Fiyat { get; set; }
-        
+
+        public decimal Dakika { get; set; }
+
     }
 }

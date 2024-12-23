@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace barber_management_system.Controllers
@@ -39,13 +40,12 @@ namespace barber_management_system.Controllers
             return View(viewModel);
         }
 
-       
-        //Çalışıyor
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(CalisanViewModel model)
         {
             model.Hizmetler = _dbContext.Hizmetler.ToList();
-           
 
             if (!ModelState.IsValid)
             {
@@ -59,7 +59,7 @@ namespace barber_management_system.Controllers
                 return View(model);
             }
 
-            var user = new IdentityUser { UserName = model.CalisanAd, Email = model.Email };
+            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
@@ -72,7 +72,6 @@ namespace barber_management_system.Controllers
                     Sifre = model.Password,
                     IdentityUserId = user.Id
                 };
-
 
                 foreach (var hizmetId in model.SelectedHizmetler)
                 {
@@ -95,6 +94,7 @@ namespace barber_management_system.Controllers
                 await _dbContext.Calisanlar.AddAsync(calisan);
                 await _dbContext.SaveChangesAsync();
 
+                // Kullanıcıyı Calisan rolüne atama
                 await _userManager.AddToRoleAsync(user, "Calisan");
 
                 return RedirectToAction("List", "Calisan");
@@ -109,7 +109,7 @@ namespace barber_management_system.Controllers
 
             return View(model);
         }
-        //Çalışıyor
+        [Authorize(Roles = "Admin, Calisan")]
         [HttpGet]
         public async Task<IActionResult> List()
         {
@@ -123,10 +123,11 @@ namespace barber_management_system.Controllers
         }
 
 
-        //Çalışmıyor
+        [Authorize(Roles = "Admin, Calisan")]
         [HttpGet("Calisan/Edit/{calisanId}")]
         public async Task<IActionResult> Edit( int calisanId)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             // Veritabanından çalışan bilgilerini ve ilişkili hizmetleri getir
             var calisan = await _dbContext.Calisanlar
                  .Include(c => c.calisanhizmetlist)
@@ -138,6 +139,12 @@ namespace barber_management_system.Controllers
             if (calisan == null)
             {
                 return NotFound("Çalışan bulunamadı.");
+            }
+
+            // Çalışanın sadece kendi bilgilerini düzenleyebilmesi için kontrol
+            if (User.IsInRole("Calisan") && calisan.IdentityUserId != userId)
+            {
+                return Forbid();
             }
 
             // Identity kullanıcı bilgilerini getir
@@ -154,6 +161,7 @@ namespace barber_management_system.Controllers
                 CalisanAd = calisan.CalisanAd,
                 CalisanSoyad = calisan.CalisanSoyad,
                 Email = user.Email,
+                Password = calisan.Sifre,
                 Hizmetler = calisan.calisanhizmetlist.Select(ch => ch.Hizmet).ToList(),
                 Uzmanlıklar = calisan.calisanuzmanliklist.Select(ch => ch.Hizmet).ToList(),
                 SelectedHizmetler = calisan.calisanhizmetlist.Select(ch => ch.HizmetId).ToList(),
@@ -172,10 +180,11 @@ namespace barber_management_system.Controllers
             return View(viewModel);
         }
 
-        //Çalışmıyor
+        [Authorize(Roles = "Admin, Calisan")]
         [HttpPost("Calisan/Edit/{calisanId}")]
         public async Task<IActionResult> Edit(CalisanViewModel model)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             // Hizmet listesini doldurmak için yardımcı metod
             async Task HizmetleriDoldur()
             {
@@ -208,6 +217,13 @@ namespace barber_management_system.Controllers
                     await HizmetleriDoldur();
                     return View(model);
                 }
+
+                // Çalışanın sadece kendi bilgilerini düzenleyebilmesi için kontrol
+                if (User.IsInRole("Calisan") && calisan.IdentityUserId != userId)
+                {
+                    return Forbid();
+                }
+
 
                 // Email adresinin başka bir kullanıcı tarafından kullanılıp kullanılmadığını kontrol et
                 var existingUserWithEmail = await _userManager.FindByEmailAsync(model.Email);
@@ -303,11 +319,11 @@ namespace barber_management_system.Controllers
             }
         }
 
-       
 
 
 
-        //Çalışıyor
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("Calisan/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -343,8 +359,7 @@ namespace barber_management_system.Controllers
 
 
 
-        
-
+        [Authorize(Roles = "Admin, Calisan, Musteri")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCalisanById(int id)
         {
@@ -360,6 +375,7 @@ namespace barber_management_system.Controllers
         }
 
         // Hizmet ekleme ve çıkarma işlemleri
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddHizmetToCalisan(int calisanId, int hizmetId)
         {
@@ -378,6 +394,7 @@ namespace barber_management_system.Controllers
             return RedirectToAction("Edit", new { id = calisanId });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> RemoveHizmetFromCalisan(int calisanId, int hizmetId)
         {

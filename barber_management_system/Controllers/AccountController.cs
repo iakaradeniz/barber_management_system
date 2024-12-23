@@ -48,7 +48,9 @@ namespace barber_management_system.Controllers
                     {
                         MusteriAd = model.Ad,
                         MusteriSoyAd = model.Soyad,
-                        IdentityUserId = user.Id
+                        IdentityUserId = user.Id,
+                        Email = model.Email,
+                        Sifre = model.Password
                     };
 
                     _context.Musteriler.Add(musteri);
@@ -86,20 +88,23 @@ namespace barber_management_system.Controllers
                     var roles = await _userManager.GetRolesAsync(user);
                     if (roles.Contains("Admin"))
                     {
-                        // Admin için admin paneline yönlendir
-                        return RedirectToAction("Index", "AdminPanel");
+                        return RedirectToAction("Index", "Home");
+                        //// Admin için admin paneline yönlendir
+                        //return RedirectToAction("Index", "AdminPanel");
                     }
                     else if (roles.Contains("Calisan"))
                     {
-                        // Çalışan için çalışan paneline yönlendir
-                        return RedirectToAction("Index", "CalisanPanel");
+                        return RedirectToAction("Index", "Home");
+                        //// Çalışan için çalışan paneline yönlendir
+                        //return RedirectToAction("Index", "CalisanPanel");
                     }
                     else if (roles.Contains("Musteri"))
                     {
-                        // Müşteri için ana sayfaya yönlendir
                         return RedirectToAction("Index", "Home");
+                        //// Müşteri için ana sayfaya yönlendir
+                        //return RedirectToAction("Index", "Home");
                     }
-                    //return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");

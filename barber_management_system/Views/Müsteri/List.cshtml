@@ -11,6 +11,8 @@
             <th>Id</th>
             <th>Ad</th>
             <th>Soyad</th>
+            <th>Email</th>
+            <th>Sifre</th>
 
         </tr>
     </thead>
@@ -21,7 +23,11 @@
                 <td>@musteri.MusteriID</td>
                 <td>@musteri.MusteriAd</td>
                 <td>@musteri.MusteriSoyAd</td>
-                <td><a class="btn btn-primary" asp-controller="Müsteri" asp-action="Edit" asp-route-id="@musteri.MusteriID">Edit</a></td>
+                <td>@musteri.Email</td>
+                <td>@musteri.Sifre</td>
+                <td><a class="btn btn-primary" asp-controller="Müsteri" asp-action="Edit" asp-route-id="@musteri.MusteriID">Edit</a>
+                    <a href="@Url.Action("Delete", "Müsteri", new { id = musteri.MusteriID })" class="btn btn-danger btn-sm">Sil</a>
+                </td>
 
             </tr>
         }

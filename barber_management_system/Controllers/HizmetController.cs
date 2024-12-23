@@ -33,7 +33,8 @@ namespace barber_management_system.Controllers
             {
                 HizmetAd = viewModel.Ad,
                 Fiyat = viewModel.Fiyat,
-               
+                Dakika = viewModel.Dakika
+
             };
             await dbContext.Hizmetler.AddAsync(hizmet);
             await dbContext.SaveChangesAsync();
@@ -65,7 +66,8 @@ namespace barber_management_system.Controllers
             {
                 hizmet.HizmetAd = viewModel.HizmetAd;
                 hizmet.Fiyat = viewModel.Fiyat;
-              
+                hizmet.Dakika = viewModel.Dakika;
+
 
                 await dbContext.SaveChangesAsync();
             }
@@ -75,10 +77,10 @@ namespace barber_management_system.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Hizmet viewModel)
         {
-            var student = await dbContext.Hizmetler
+            var hizmet = await dbContext.Hizmetler
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.HizmetID == viewModel.HizmetID);
-            if (student is not null)
+            if (hizmet is not null)
             {
                 dbContext.Hizmetler.Remove(viewModel);
                 await dbContext.SaveChangesAsync();
