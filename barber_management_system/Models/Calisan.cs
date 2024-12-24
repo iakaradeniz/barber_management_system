@@ -23,6 +23,9 @@
         // Haftanın her günü için çalışma saatlerini tutan ilişki
         public List<CalismaSaati> CalismaSaatleri { get; set; } = new List<CalismaSaati>();
 
+        // Çalışanın uygunluk saatlerini tutan liste
+        public List<CalisanUygunluk> CalisanUygunluklar { get; set; }
+
 
 
         // Randevular (One-to-Many)

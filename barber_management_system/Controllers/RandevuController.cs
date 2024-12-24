@@ -1,4 +1,106 @@
-﻿//using barber_management_system.Data;
+﻿using barber_management_system.Data;
+using barber_management_system.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace barber_management_system.Controllers
+{
+    [Authorize(Roles = "Admin, Calisan, Musteri")]
+    public class RandevuController : Controller
+    {
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public RandevuController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
+        {
+            _dbContext = dbContext;
+            _userManager = userManager;
+        }
+
+        [HttpGet]
+        public IActionResult Add()
+        {
+            ViewBag.Calisanlar = _dbContext.Calisanlar.ToList();
+            ViewBag.Hizmetler = _dbContext.Hizmetler.ToList();
+            return View();
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//using barber_management_system.Data;
 //using barber_management_system.Models;
 //using Microsoft.AspNet.Identity;
 //using Microsoft.AspNetCore.Identity;

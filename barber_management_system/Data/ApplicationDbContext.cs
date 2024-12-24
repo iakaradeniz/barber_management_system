@@ -13,6 +13,7 @@ namespace barber_management_system.Data
 
         }
         public DbSet<Calisan> Calisanlar { get; set; }
+        public DbSet<CalisanUygunluk> CalisanUygunluklar { get; set; }
 
         public DbSet<CalisanHizmet> CalisanHizmetler { get; set; }
         public DbSet<CalisanUzmanlik> CalisanUzmanliklar { get; set; }
@@ -27,31 +28,49 @@ namespace barber_management_system.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Rolleri oluştur
-            //modelBuilder.Entity<IdentityRole>().HasData(
-            //    new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-            //    new IdentityRole { Name = "Calisan", NormalizedName = "CALISAN" },
-            //    new IdentityRole { Name = "Musteri", NormalizedName = "MUSTERI" }
-            //);
-            // Randevu - Musteri (One-to-Many)
-            modelBuilder.Entity<Randevu>()
-                .HasOne(r => r.musteri)
-                .WithMany(m => m.randevulist)
-                .HasForeignKey(r => r.MusteriId);
 
-            // Randevu - Calisan (One-to-Many)
-            modelBuilder.Entity<Randevu>()
-                .HasOne(r => r.calisan)
-                .WithMany(c => c.randevulist)
-                .HasForeignKey(r => r.CalisanId);
+            // CalisanUygunluk yapılandırması
+            modelBuilder.Entity<CalisanUygunluk>(entity =>
+            {
+                entity.HasKey(cu => cu.CalisanUygunlukID);
+                entity.Property(cu => cu.Gun).IsRequired();
+                entity.Property(cu => cu.BaslangicSaati).IsRequired();
+                entity.Property(cu => cu.BitisSaati).IsRequired();
+                entity.HasOne(cu => cu.Calisan)
+                      .WithMany(c => c.CalisanUygunluklar)
+                      .HasForeignKey(cu => cu.CalisanID);
+            });
 
-            // Randevu - Hizmet (One-to-Many)
-            modelBuilder.Entity<Randevu>()
-                .HasOne(r => r.hizmet)
-                .WithMany(h => h.randevulist)
-                .HasForeignKey(r => r.HizmetId);
+            // Randevu yapılandırması
+            modelBuilder.Entity<Randevu>(entity =>
+            {
+                entity.HasKey(r => r.RandevuID);
+                entity.Property(r => r.RandevuTarihi).IsRequired();
+                entity.Property(r => r.Dakika).IsRequired();
+                entity.Property(r => r.Ucret).IsRequired().HasColumnType("decimal(18,2)");
+                entity.Property(r => r.OnayDurumu).IsRequired();
 
-            
+                // Randevu - Musteri (One-to-Many)
+                modelBuilder.Entity<Randevu>()
+                    .HasOne(r => r.musteri)
+                    .WithMany(m => m.randevulist)
+                    .HasForeignKey(r => r.MusteriId);
+
+                // Randevu - Calisan (One-to-Many)
+                modelBuilder.Entity<Randevu>()
+                    .HasOne(r => r.calisan)
+                    .WithMany(c => c.randevulist)
+                    .HasForeignKey(r => r.CalisanId);
+
+                // Randevu - Hizmet (One-to-Many)
+                modelBuilder.Entity<Randevu>()
+                    .HasOne(r => r.hizmet)
+                    .WithMany(h => h.randevulist)
+                    .HasForeignKey(r => r.HizmetId);
+
+
+            });
+
 
             // Calisan - UzmanlikAlanlari (Many-to-Many with Hizmet)
             modelBuilder.Entity<CalisanUzmanlik>()
@@ -98,14 +117,6 @@ namespace barber_management_system.Data
             optionsBuilder.ConfigureWarnings(warnings => warnings
                 .Log(RelationalEventId.PendingModelChangesWarning)); // Uyarıyı loglayın
         }
-
-
-
-
-
-
-
-
 
     }
 }
