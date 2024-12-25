@@ -272,8 +272,33 @@
                         @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("Calisan"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Musteri" asp-action="Profil">Profilim</a>
-                            </li>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Musteri" asp-action="Profil">Profilim</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="randevuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Randevular
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="randevuDropdown">
+                            <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Add">Randevu Ekle</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Musteri_Randevu_List">Randevularımı Gör</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="calisanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Çalışanlar
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="calisanDropdown">
+                            <li><a class="dropdown-item" asp-controller="Calisan" asp-action="List">Çalışanları Gör</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="hizmetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Hizmetler
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="hizmetDropdown">
+                            <li><a class="dropdown-item" asp-controller="Hizmet" asp-action="List">Hizmetleri Gör</a></li>
+                        </ul>
+                    </li>
                         }
                     </ul>
                     <ul class="navbar-nav">

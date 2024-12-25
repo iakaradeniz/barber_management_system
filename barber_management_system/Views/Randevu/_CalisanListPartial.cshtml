@@ -1,0 +1,24 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model IEnumerable<barber_management_system.Models.Calisan>
+
+@if (Model.Any())
+{
+    <div class="form-group">
+        <label for="calisanDropdown" class="control-label">Uygun Çalışanlar</label>
+        <select class="form-control" id="calisanDropdown">
+            @foreach (var calisan in Model)
+            {
+                <option value="@calisan.CalisanID">@calisan.CalisanAd  @calisan.CalisanSoyad</option>
+            }
+        </select>
+    </div>
+}
+else
+{
+    <p>Uygun çalışan bulunamadı.</p>
+}
