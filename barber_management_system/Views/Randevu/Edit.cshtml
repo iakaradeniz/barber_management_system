@@ -87,7 +87,7 @@
 
 
 
-@model barber_management_system.Models.RandevuViewModel
+ @model barber_management_system.Models.RandevuViewModel
 
 @{
     ViewData["Title"] = "Randevu Güncelle";
@@ -98,6 +98,11 @@
 <h2>Randevu Güncelle</h2>
 
 <form method="post" id="randevuForm" action="@Url.Action("GetCalisanlar", "Randevu",new { returnUrl = "edit" })">
+
+    <div class="form-group">
+        <label asp-for="@randevuId" class="control-label">Randevu ID</label>
+        <input asp-for="@randevuId" class="form-control" readonly />
+    </div>
     <div class="form-group">
         <label asp-for="MusteriId" class="control-label">Müşteri ID</label>
         <input asp-for="MusteriId" class="form-control" readonly />
@@ -126,7 +131,7 @@
     <input type="hidden" asp-for="MusteriId" />
 </form>
 
-<form method="post" asp-action="Edit" asp-controller="Randevu">
+<form method="post" asp-action="Edit" asp-controller="Randevu" asp-route-id="@randevuId">
     <div class="form-group">
         <label asp-for="CalisanId" class="control-label">Uygun Çalışanlar</label>
         <select asp-for="CalisanId" class="form-control" id="calisanDropdown">
@@ -146,11 +151,12 @@
         <span asp-validation-for="CalisanId" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-danger ms-3" asp-controller="Randevu" asp-action="Edit" asp-route-id=randevuId>Randevu Güncelle</button>
+        <button type="submit" class="btn btn-danger ms-3" asp-controller="Randevu" asp-action="Edit">Randevu Güncelle</button>
     </div>
     <input type="hidden" asp-for="MusteriId" />
     <input type="hidden" asp-for="HizmetId" />
     <input type="hidden" asp-for="RandevuTarihi" />
+    <input type="hidden" name="RandevuId" value="@Model.RandevuId" />
     <input type="hidden" name="Dakika" id="hiddenDakika" value="@Model.Dakika" />
     <input type="hidden" name="Fiyat" id="hiddenFiyat" value="@Model.Fiyat" />
 </form>
@@ -176,4 +182,207 @@
             });
         });
     </script>
+} 
+
+
+@* @model barber_management_system.Models.Randevu
+
+@{
+    ViewData["Title"] = "Randevu Güncelle";
+    var randevuId = ViewBag.RandevuId; // Randevu ID'sini ViewBag'den alıyoruz.
 }
+
+<h2>Randevu Güncelle</h2>
+
+<!-- Çalışanları Bulma Formu -->
+<form method="post" id="randevuForm" action="@Url.Action("GetCalisanlar", "Randevu", new { returnUrl = "edit" })">
+    <div class="form-group">
+        <label asp-for="MusteriId" class="control-label">Müşteri ID</label>
+        <input asp-for="MusteriId" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="HizmetId" class="control-label">Hizmet Seçin</label>
+        <select asp-for="HizmetId" class="form-control" id="hizmetDropdown">
+            <option value="">Hizmet Seçin</option>
+            @foreach (var hizmet in ViewBag.Hizmetler as List<Hizmet>)
+            {
+                <option value="@hizmet.HizmetID" data-dakika="@hizmet.Dakika" data-fiyat="@hizmet.Fiyat" 
+                        @(hizmet.HizmetID == Model.HizmetId ? "selected" : "")>
+                    @hizmet.HizmetAd - @hizmet.Dakika dakika
+                </option>
+            }
+        </select>
+        <span asp-validation-for="HizmetId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RandevuTarihi" class="control-label"></label>
+        <input asp-for="RandevuTarihi" class="form-control" type="datetime-local" />
+        <span asp-validation-for="RandevuTarihi" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Dakika" id="Dakika" />
+    <input type="hidden" asp-for="Ucret" id="Fiyat" />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" id="findCalisanButton">Çalışanları Bul</button>
+    </div>
+    <input type="hidden" asp-for="MusteriId" />
+</form>
+
+<!-- Randevu Güncelleme Formu -->
+<form method="post" asp-action="Edit" asp-controller="Randevu" asp-route-randevuId="@Model.RandevuId">
+    <div class="form-group">
+        <label asp-for="CalisanId" class="control-label">Uygun Çalışanlar</label>
+        <select asp-for="CalisanId" class="form-control" id="calisanDropdown">
+            <option value="">Çalışan Seçin</option>
+            @if (ViewBag.Calisanlar != null)
+            {
+                foreach (var calisan in (List<Calisan>)ViewBag.Calisanlar)
+                {
+                    <option value="@calisan.CalisanID" @(calisan.CalisanID == Model.CalisanId ? "selected" : "")>
+                        @calisan.CalisanAd
+                    </option>
+                }
+            }
+        </select>
+        <span asp-validation-for="CalisanId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger ms-3">Randevu Güncelle</button>
+    </div>
+    <input type="hidden" asp-for="MusteriId" />
+    <input type="hidden" asp-for="HizmetId" />
+    <input type="hidden" asp-for="RandevuTarihi" />
+    <input type="hidden" asp-for="Dakika" id="hiddenDakika" />
+    <input type="hidden" asp-for="Ucret" id="hiddenFiyat" />
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Hizmet değiştiğinde dakika ve fiyat değerlerini güncelle
+            $('#hizmetDropdown').change(function () {
+                var selectedOption = $(this).find('option:selected');
+                var dakika = selectedOption.data('dakika');
+                var fiyat = selectedOption.data('fiyat');
+                $('#Dakika').val(dakika);
+                $('#Fiyat').val(fiyat);
+                $('#hiddenDakika').val(dakika);
+                $('#hiddenFiyat').val(fiyat);
+            });
+
+            // Form gönderimi sırasında değerleri kontrol et ve güncelle
+            $('#randevuForm').submit(function () {
+                var selectedOption = $('#hizmetDropdown').find('option:selected');
+                var dakika = selectedOption.data('dakika');
+                var fiyat = selectedOption.data('fiyat');
+                $('#Dakika').val(dakika);
+                $('#Fiyat').val(fiyat);
+                $('#hiddenDakika').val(dakika);
+                $('#hiddenFiyat').val(fiyat);
+                return true;
+            });
+        });
+    </script>
+}
+
+
+
+
+ *@
+
+
+@* @model barber_management_system.Models.Randevu
+
+@{
+    ViewData["Title"] = "Randevu Güncelle";
+    var randevuId = ViewBag.RandevuId;
+}
+
+<h2>Randevu Güncelle</h2>
+
+<form method="post" id="randevuForm" action="@Url.Action("GetCalisanlar", "Randevu", new { returnUrl = "edit" })">
+    <div class="form-group">
+        <label asp-for="MusteriId" class="control-label">Müşteri ID</label>
+        <input asp-for="MusteriId" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="HizmetId" class="control-label">Hizmet Seçin</label>
+        <select asp-for="HizmetId" class="form-control" id="hizmetDropdown">
+            <option value="">Hizmet Seçin</option>
+            @foreach (var hizmet in ViewBag.Hizmetler as List<Hizmet>)
+            {
+                <option value="@hizmet.HizmetID" 
+                        data-dakika="@hizmet.Dakika" 
+                        data-fiyat="@hizmet.Fiyat" 
+                        selected="@(hizmet.HizmetID == Model.HizmetId)">
+                    @hizmet.HizmetAd - @hizmet.Dakika dakika
+                </option>
+            }
+        </select>
+        <span asp-validation-for="HizmetId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RandevuTarihi" class="control-label"></label>
+        <input asp-for="RandevuTarihi" class="form-control" type="datetime-local" />
+        <span asp-validation-for="RandevuTarihi" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Dakika" id="Dakika" />
+    <input type="hidden" asp-for="Ucret" id="Fiyat" />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" id="findCalisanButton">Çalışanları Bul</button>
+    </div>
+    <input type="hidden" asp-for="MusteriId" />
+</form>
+
+<form method="post" asp-action="Edit" asp-controller="Randevu" asp-route-randevuId="@Model.RandevuID">
+    <div class="form-group">
+        <label asp-for="CalisanId" class="control-label">Uygun Çalışanlar</label>
+        <select asp-for="CalisanId" class="form-control" id="calisanDropdown">
+            <option value="">Çalışan Seçin</option>
+            @if (ViewBag.Calisanlar != null)
+            {
+                foreach (var calisan in (List<Calisan>)ViewBag.Calisanlar)
+                {
+                    <option value="@calisan.CalisanID" selected="@(calisan.CalisanID == Model.CalisanId)">
+                        @calisan.CalisanAd
+                    </option>
+                }
+            }
+        </select>
+        <span asp-validation-for="CalisanId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger ms-3">Randevu Güncelle</button>
+    </div>
+    <input type="hidden" asp-for="MusteriId" />
+    <input type="hidden" asp-for="HizmetId" />
+    <input type="hidden" asp-for="RandevuTarihi" />
+    <input type="hidden" asp-for="Dakika" id="hiddenDakika" />
+    <input type="hidden" asp-for="Ucret" id="hiddenFiyat" />
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#hizmetDropdown').change(function () {
+                var selectedOption = $(this).find('option:selected');
+                var dakika = selectedOption.data('dakika');
+                var fiyat = selectedOption.data('fiyat');
+                $('#Dakika').val(dakika);
+                $('#Fiyat').val(fiyat);
+                $('#hiddenDakika').val(dakika);
+                $('#hiddenFiyat').val(fiyat);
+            });
+
+            $('#randevuForm').submit(function () {
+                var selectedOption = $('#hizmetDropdown').find('option:selected');
+                var dakika = selectedOption.data('dakika');
+                var fiyat = selectedOption.data('fiyat');
+                $('#Dakika').val(dakika);
+                $('#Fiyat').val(fiyat);
+                $('#hiddenDakika').val(dakika);
+                $('#hiddenFiyat').val(fiyat);
+                return true;
+            });
+        });
+    </script>
+} *@

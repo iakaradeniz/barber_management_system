@@ -2,9 +2,9 @@
 
 namespace barber_management_system.Models
 {
-    public class RandevuViewModel
+    public class RandevuGuncellemeViewModel
     {
-        public int? RandevuId { get; set; }
+        public int RandevuId { get; set; }
         [Required(ErrorMessage = "Müşteri ID gereklidir.")]
         public int MusteriId { get; set; }
 

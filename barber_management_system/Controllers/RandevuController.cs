@@ -1,5 +1,6 @@
 ﻿using barber_management_system.Data;
 using barber_management_system.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,22 @@ namespace barber_management_system.Controllers
                     return View(viewModel);
                 }
 
+                // Seçilen çalışanı kontrol et
+                if (viewModel.CalisanId == 0)
+                {
+                    ModelState.AddModelError("", "Lütfen bir çalışan seçiniz.");
+                    viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
+                    return View(viewModel);
+                }
+
+                var secilenCalisan = await _dbContext.Calisanlar.FindAsync(viewModel.CalisanId);
+                if (secilenCalisan == null)
+                {
+                    ModelState.AddModelError("", "Seçilen çalışan bulunamadı.");
+                    viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
+                    return View(viewModel);
+                }
+
                 var hizmet = await _dbContext.Hizmetler.FindAsync(viewModel.HizmetId);
                 if (hizmet == null)
                 {
@@ -74,74 +91,66 @@ namespace barber_management_system.Controllers
                     return View(viewModel);
                 }
 
-                // Çalışan uygunluk kontrolü
-                var calisanHizmetler = await _dbContext.CalisanHizmetler
-                    .Where(ch => ch.HizmetId == viewModel.HizmetId)
-                    .Select(ch => ch.CalisanId)
-                    .ToListAsync();
+                // Seçilen çalışanın bu hizmeti verip veremediğini kontrol et
+                var calisanHizmetVar = await _dbContext.CalisanHizmetler
+                    .AnyAsync(ch => ch.CalisanId == viewModel.CalisanId && ch.HizmetId == viewModel.HizmetId);
 
-                var uygunCalisanListesi = new List<Calisan>();
-
-                foreach (var calisanId in calisanHizmetler)
+                if (!calisanHizmetVar)
                 {
-                    var calisanMusait = true;
-
-                    // Çalışanın çalışma saatlerini kontrol et
-                    var calismaSaatleri = await _dbContext.CalismaSaatleri
-                        .Where(cs => cs.CalisanId == calisanId && cs.Gun == viewModel.RandevuTarihi.DayOfWeek)
-                        .ToListAsync();
-
-                    var hizmetSuresi = (int)hizmet.Dakika;
-                    var randevuBaslangic = viewModel.RandevuTarihi.TimeOfDay;
-                    var randevuBitis = randevuBaslangic.Add(TimeSpan.FromMinutes(hizmetSuresi));
-
-                    foreach (var calismaSaati in calismaSaatleri)
-                    {
-                        if (randevuBaslangic >= calismaSaati.BaslangicSaati.TimeOfDay && randevuBitis <= calismaSaati.BitisSaati.TimeOfDay)
-                        {
-                            // Çalışan çalışma saatleri içerisinde ise, randevularını kontrol et
-                            var mevcutRandevular = await _dbContext.Randevular
-                                .Where(r => r.CalisanId == calisanId && r.RandevuTarihi.Date == viewModel.RandevuTarihi.Date)
-                                .ToListAsync();
-
-                            foreach (var randevu in mevcutRandevular)
-                            {
-                                var mevcutRandevuBaslangic = randevu.RandevuTarihi.TimeOfDay;
-                                var mevcutRandevuBitis = mevcutRandevuBaslangic.Add(TimeSpan.FromMinutes(randevu.Dakika));
-
-                                if (randevuBaslangic < mevcutRandevuBitis && randevuBitis > mevcutRandevuBaslangic)
-                                {
-                                    calisanMusait = false;
-                                    break;
-                                }
-                            }
-
-                            if (calisanMusait)
-                            {
-                                var calisan = await _dbContext.Calisanlar.FindAsync(calisanId);
-                                uygunCalisanListesi.Add(calisan);
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                if (!uygunCalisanListesi.Any())
-                {
-                    ModelState.AddModelError("", "Seçilen tarihte uygun çalışan bulunamadı.");
+                    ModelState.AddModelError("", "Seçilen çalışan bu hizmeti verememektedir.");
                     viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
                     return View(viewModel);
                 }
 
-                // Uygun çalışanlardan birini seçelim (örneğin ilkini)
-                var secilenCalisan = uygunCalisanListesi.First();
+                // Çalışanın müsaitlik kontrolü
+                var calismaSaatleri = await _dbContext.CalismaSaatleri
+                    .Where(cs => cs.CalisanId == viewModel.CalisanId && cs.Gun == viewModel.RandevuTarihi.DayOfWeek)
+                    .ToListAsync();
+
+                var hizmetSüresi = (int)hizmet.Dakika;
+                var randevuBaslangic = viewModel.RandevuTarihi.TimeOfDay;
+                var randevuBitis = randevuBaslangic.Add(TimeSpan.FromMinutes(hizmetSüresi));
+
+                bool calisanMusait = false;
+                foreach (var calismaSaati in calismaSaatleri)
+                {
+                    if (randevuBaslangic >= calismaSaati.BaslangicSaati.TimeOfDay &&
+                        randevuBitis <= calismaSaati.BitisSaati.TimeOfDay)
+                    {
+                        // Çalışanın mevcut randevularını kontrol et
+                        var mevcutRandevular = await _dbContext.Randevular
+                            .Where(r => r.CalisanId == viewModel.CalisanId &&
+                                   r.RandevuTarihi.Date == viewModel.RandevuTarihi.Date)
+                            .ToListAsync();
+
+                        calisanMusait = true;
+                        foreach (var randevu in mevcutRandevular)
+                        {
+                            var mevcutRandevuBaslangic = randevu.RandevuTarihi.TimeOfDay;
+                            var mevcutRandevuBitis = mevcutRandevuBaslangic.Add(TimeSpan.FromMinutes(randevu.Dakika));
+
+                            if (randevuBaslangic < mevcutRandevuBitis && randevuBitis > mevcutRandevuBaslangic)
+                            {
+                                calisanMusait = false;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                if (!calisanMusait)
+                {
+                    ModelState.AddModelError("", "Seçilen çalışan bu saatte müsait değil.");
+                    viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
+                    return View(viewModel);
+                }
 
                 // Yeni randevu oluşturma
                 var yeniRandevu = new Randevu
                 {
                     MusteriId = musteri.MusteriID,
-                    CalisanId = secilenCalisan.CalisanID,
+                    CalisanId = viewModel.CalisanId, // Müşterinin seçtiği çalışan
                     HizmetId = viewModel.HizmetId,
                     RandevuTarihi = viewModel.RandevuTarihi,
                     Dakika = (int)hizmet.Dakika,
@@ -203,9 +212,9 @@ namespace barber_management_system.Controllers
                     .Where(cs => cs.CalisanId == calisanId && cs.Gun == viewModel.RandevuTarihi.DayOfWeek)
                     .ToListAsync();
 
-                var hizmetSuresi = (int)(await _dbContext.Hizmetler.FindAsync(viewModel.HizmetId)).Dakika;
+                var hizmetSüresi = (int)(await _dbContext.Hizmetler.FindAsync(viewModel.HizmetId)).Dakika;
                 var randevuBaslangic = viewModel.RandevuTarihi.TimeOfDay;
-                var randevuBitis = randevuBaslangic.Add(TimeSpan.FromMinutes(hizmetSuresi));
+                var randevuBitis = randevuBaslangic.Add(TimeSpan.FromMinutes(hizmetSüresi));
                 //Burayı Kontrol et
                 foreach (var calismaSaati in calismaSaatleri)
                 {
@@ -264,14 +273,9 @@ namespace barber_management_system.Controllers
                 return View("Add", viewModel);
             }
             //return RedirectToAction("Add", viewModel);
-            if (returnUrl == "edit")
-            {
-                return View("Edit", viewModel);
-            }
-            else
-            {
-                return View("Add", viewModel);
-            }
+          
+
+            return View(returnUrl == "edit" ? "Edit" : "Add", viewModel);
 
         }
 
@@ -358,7 +362,7 @@ namespace barber_management_system.Controllers
 
             var model = new RandevuViewModel
             {
-               
+               RandevuId = randevuId,
                 MusteriId = randevu.MusteriId,
                 CalisanId = randevu.CalisanId,
                 HizmetId = randevu.HizmetId,
@@ -374,11 +378,17 @@ namespace barber_management_system.Controllers
             return View(model);
         }
 
-        [HttpPost("Randevu/Edit/{randevuId}")]
-        public async Task<IActionResult> Edit(int randevuId, [FromForm] RandevuViewModel viewModel)
+        //[HttpPost("Randevu/Edit/{randevuId}")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(int randevuId, [FromForm]RandevuViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var calisan = await _dbContext.Calisanlar.FindAsync(viewModel.CalisanId);
+               
+                
+                var user = await _userManager.FindByIdAsync(calisan.IdentityUserId);
+                
                 var randevu = await _dbContext.Randevular.FindAsync(randevuId);
                 if (randevu == null)
                 {
@@ -425,13 +435,62 @@ namespace barber_management_system.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return RedirectToAction("List");
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("List", "Randevu");
+                }
+                else if (await _userManager.IsInRoleAsync(user, "Calisan"))
+                {
+                    return RedirectToAction("List", "Randevu");
+                }
+                else if (await _userManager.IsInRoleAsync(user, "Musteri"))
+                {
+                    return RedirectToAction("Musteri_Randevu_List", "Randevu");
+                }
             }
 
             viewModel.Calisanlar = await _dbContext.Calisanlar.ToListAsync();
             viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
             return View(viewModel);
         }
+
+        //[HttpPost("Randevu/Edit/{randevuId}")]
+        //public async Task<IActionResult> Edit(int randevuId, [FromForm] RandevuViewModel viewModel)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        viewModel.Calisanlar = await _dbContext.Calisanlar.ToListAsync();
+        //        viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
+        //        return View(viewModel);
+        //    }
+
+        //    var randevu = await _dbContext.Randevular.FindAsync(randevuId);
+        //    if (randevu == null)
+        //    {
+        //        return NotFound("Randevu bulunamadı.");
+        //    }
+
+        //    try
+        //    {
+        //        randevu.MusteriId = viewModel.MusteriId;
+        //        randevu.CalisanId = viewModel.CalisanId;
+        //        randevu.HizmetId = viewModel.HizmetId;
+        //        randevu.RandevuTarihi = viewModel.RandevuTarihi;
+        //        randevu.Dakika = viewModel.Dakika;
+        //        randevu.Ucret = viewModel.Fiyat;
+        //        randevu.OnayDurumu = false;
+
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("List");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu: " + ex.Message);
+        //        viewModel.Calisanlar = await _dbContext.Calisanlar.ToListAsync();
+        //        viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
+        //        return View(viewModel);
+        //    }
+        //}
 
         [Authorize(Roles = "Admin , Musteri")]
         [HttpGet("Randevu/Delete/{randevuId}")]
