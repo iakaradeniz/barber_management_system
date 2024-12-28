@@ -15,14 +15,17 @@ namespace barber_management_system.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<IdentityUser> _userManager;
-
-        public RandevuController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
+        
+        public RandevuController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IWebHostEnvironment environment)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+           
         }
 
+   
 
+      
 
         [HttpGet("Randevu/Add")]
         public async Task<IActionResult> Add()
@@ -162,14 +165,17 @@ namespace barber_management_system.Controllers
 
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                 {
+                    TempData["SuccessMessage"] = "Randevu başarıyla eklendi.";
                     return RedirectToAction("List", "Randevu");
                 }
                 else if (await _userManager.IsInRoleAsync(user, "Calisan"))
                 {
+                    TempData["SuccessMessage"] = "Randevu başarıyla eklendi.";
                     return RedirectToAction("List", "Randevu");
                 }
                 else if (await _userManager.IsInRoleAsync(user, "Musteri"))
                 {
+                    TempData["SuccessMessage"] = "Randevu başarıyla eklendi.";
                     return RedirectToAction("Musteri_Randevu_List", "Randevu");
                 }
             }
@@ -320,23 +326,6 @@ namespace barber_management_system.Controllers
         }
 
 
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [Authorize(Roles = "Admin, Calisan")]
         [HttpPost("Randevu/Onayla/{randevuId}")]
         public async Task<IActionResult> Onayla(int randevuId)
@@ -347,7 +336,7 @@ namespace barber_management_system.Controllers
                 randevu.OnayDurumu = true;
                 await _dbContext.SaveChangesAsync();
             }
-
+            TempData["SuccessMessage"] = "Randevu başarıyla onaylandı";
             return RedirectToAction("List");
         }
 
@@ -437,14 +426,17 @@ namespace barber_management_system.Controllers
 
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                 {
+                    TempData["SuccessMessage"] = "Randevu başarıyla güncellendi.";
                     return RedirectToAction("List", "Randevu");
                 }
                 else if (await _userManager.IsInRoleAsync(user, "Calisan"))
                 {
+                    TempData["SuccessMessage"] = "Randevu başarıyla güncellendi.";
                     return RedirectToAction("List", "Randevu");
                 }
                 else if (await _userManager.IsInRoleAsync(user, "Musteri"))
                 {
+                    TempData["SuccessMessage"] = "Randevu başarıyla güncellendi.";
                     return RedirectToAction("Musteri_Randevu_List", "Randevu");
                 }
             }
@@ -454,43 +446,7 @@ namespace barber_management_system.Controllers
             return View(viewModel);
         }
 
-        //[HttpPost("Randevu/Edit/{randevuId}")]
-        //public async Task<IActionResult> Edit(int randevuId, [FromForm] RandevuViewModel viewModel)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        viewModel.Calisanlar = await _dbContext.Calisanlar.ToListAsync();
-        //        viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
-        //        return View(viewModel);
-        //    }
-
-        //    var randevu = await _dbContext.Randevular.FindAsync(randevuId);
-        //    if (randevu == null)
-        //    {
-        //        return NotFound("Randevu bulunamadı.");
-        //    }
-
-        //    try
-        //    {
-        //        randevu.MusteriId = viewModel.MusteriId;
-        //        randevu.CalisanId = viewModel.CalisanId;
-        //        randevu.HizmetId = viewModel.HizmetId;
-        //        randevu.RandevuTarihi = viewModel.RandevuTarihi;
-        //        randevu.Dakika = viewModel.Dakika;
-        //        randevu.Ucret = viewModel.Fiyat;
-        //        randevu.OnayDurumu = false;
-
-        //        await _dbContext.SaveChangesAsync();
-        //        return RedirectToAction("List");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ModelState.AddModelError("", "Güncelleme sırasında bir hata oluştu: " + ex.Message);
-        //        viewModel.Calisanlar = await _dbContext.Calisanlar.ToListAsync();
-        //        viewModel.Hizmetler = await _dbContext.Hizmetler.ToListAsync();
-        //        return View(viewModel);
-        //    }
-        //}
+      
 
         [Authorize(Roles = "Admin , Musteri")]
         [HttpGet("Randevu/Delete/{randevuId}")]
@@ -504,7 +460,7 @@ namespace barber_management_system.Controllers
 
             _dbContext.Randevular.Remove(randevu);
             await _dbContext.SaveChangesAsync();
-
+            TempData["SuccessMessage"] = "Randevu başarıyla silindi.";
             return RedirectToAction("List");
         }
 

@@ -11,16 +11,19 @@
     <div class="mt-3">
         <label class="form-label">Ad</label>
         <input type="text" class="form-control" asp-for="Ad" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
     </div>
 
     <div class="mt-3">
         <label class="form-label">Fiyat</label>
         <input type="number" class="form-control" asp-for="Fiyat" />
+        <span asp-validation-for="Fiyat" class="text-danger"></span>
     </div>
 
     <div class="mt-3">
         <label class="form-label">Dakika</label>
         <input type="number" class="form-control" asp-for="Dakika" />
+        <span asp-validation-for="Dakika" class="text-danger"></span>
     </div>
 
 

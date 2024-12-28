@@ -27,7 +27,7 @@
     </div>
     <div class="form-group">
         <label asp-for="RandevuTarihi" class="control-label"></label>
-        <input asp-for="RandevuTarihi" class="form-control" type="datetime-local" id="randevuTarihi" />
+        <input asp-for="RandevuTarihi" class="form-control" type="datetime-local" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" id="randevuTarihi" />
         <span asp-validation-for="RandevuTarihi" class="text-danger"></span>
     </div>
     <input type="hidden" name="Dakika" id="Dakika" value="@Model.Dakika" />

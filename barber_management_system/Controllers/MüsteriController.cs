@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace barber_management_system.Controllers
 {
-    [Authorize(Roles = "Admin, Calisan, Musteri")]
+    
     public class MüsteriController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -61,7 +61,7 @@ namespace barber_management_system.Controllers
                     await _dbContext.SaveChangesAsync();
 
                     await _userManager.AddToRoleAsync(user, "Musteri");
-
+                    TempData["SuccessMessage"] = "Müşteri başarıyla eklendi";
                     return RedirectToAction("List", "Müsteri");
                 }
                 else
@@ -78,7 +78,7 @@ namespace barber_management_system.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Calisan, Musteri")]
+        [Authorize(Roles = "Admin, Calisan")]
 
         public async Task<IActionResult> List()
         {
@@ -86,7 +86,7 @@ namespace barber_management_system.Controllers
             return View(musteri);
         }
 
-        [Authorize(Roles = "Admin, Calisan")]
+        [Authorize(Roles = "Admin,Musteri")]
         [HttpGet("Müsteri/Edit/{musteriId}")]
         public async Task<IActionResult> Edit(int musteriId)
         {
@@ -119,7 +119,7 @@ namespace barber_management_system.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = "Admin, Calisan")]
+        [Authorize(Roles = "Admin,Musteri")]
         [HttpPost("Müsteri/Edit/{musteriId}")]
         public async Task<IActionResult> Edit(MusteriViewModel viewModel)
         {
@@ -187,6 +187,7 @@ namespace barber_management_system.Controllers
                     // Değişiklikleri kaydet ve transaction'ı tamamla
                     await _dbContext.SaveChangesAsync();
                     await transaction.CommitAsync();
+                    TempData["SuccessMessage"] = "Müşteri başarıyla güncellendi";
                     return RedirectToAction("List", "Müsteri");
                 }
                 else
@@ -204,7 +205,7 @@ namespace barber_management_system.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Musteri")]
         [HttpGet("Müsteri/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -224,6 +225,7 @@ namespace barber_management_system.Controllers
                 {
                     await _userManager.DeleteAsync(user);
                 }
+                TempData["SuccessMessage"] = "Müşteri başarıyla silindi";
                 return RedirectToAction("List", "Müsteri");
             }
             else

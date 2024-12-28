@@ -1,39 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
-
-@* @model List<barber_management_system.Models.Calisan>
-
-<h1>Çalışanlar</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Ad</th>
-            <th>Soyad</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var calisan in Model)
-        {
-            <tr>
-                <td>@calisan.CalisanID</td>
-                <td>@calisan.CalisanAd</td>
-                <td>@calisan.CalisanSoyad</td>
-                <td><a class="btn btn-primary" asp-controller="Calisan" asp-action="Edit" asp-route-id="@calisan.CalisanID">Edit</a></td>
-                <td><a class="btn btn-primary" asp-controller="CalismaSaati" asp-action="Add" asp-route-id="@calisan.CalisanID">Çalışma Saati Ekle</a></td>
-                
-
-            </tr>
-        }
-    </tbody>
-</table>
-<td><a class="btn btn-primary" asp-controller="Calisan" asp-action="Add">Add</a></td> *@
-
+﻿
 @model List<barber_management_system.Models.Calisan>
 @{
     var successMessage = TempData["SuccessMessage"];

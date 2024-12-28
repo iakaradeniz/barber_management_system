@@ -1,154 +1,4 @@
-﻿@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - barber_management_system</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/barber_management_system.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/barber_management_system.styles.css" asp-append-version="true" />
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">barber_management_system</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="hizmetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Hizmet İşlemleri
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="hizmetDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="Add">Add Hizmet</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="List">Tüm Hizmetler</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="Edit">Edit Hizmet</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="calisanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Calisan İşlemleri
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="calisanDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Calisan" asp-action="Add">Çalışan Ekle</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Calisan" asp-action="List">Tüm Çalışanlar</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Calisan" asp-action="Edit">Çalışan Edit</a>
-                                </li>
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="musteriDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Musteri İşlemleri
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="musteriDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Müsteri" asp-action="Add">Add Müsteri</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Müsteri" asp-action="List">Tüm Müsteriler</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Müsteri" asp-action="Edit">Edit Müsteri</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="saatDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Çalışma Saati Yönetimi
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="saatDropdown">
-
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="CalismaSaati" asp-action="List">Çalışma Çizelgesi</a>
-                                </li>
-
-                            </ul>
-                        </li>
-
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
-                                    <button type="submit" class="btn btn-link nav-link text-dark">Yönetici Çıkış</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - barber_management_system - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    <!-- JavaScript Dosyaları -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- Select2 Initialize Script -->
-    <script>
-        $(document).ready(function () {
-            $('.select2').select2({
-                placeholder: "Hizmet seçiniz...",
-                allowClear: true,  // X işareti ile seçimleri temizleme özelliği
-                width: '100%'
-            });
-        });
-    </script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html> *@
-
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -188,7 +38,7 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="hizmetDropdown">
                                     <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="Add">Add Hizmet</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="Add">Hizmet Ekle</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="List">Tüm Hizmetler</a>
@@ -208,6 +58,10 @@
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Calisan" asp-action="List">Tüm Çalışanlar</a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="CalismaSaati" asp-action="List">Çalışma Saatleri</a>
+                                    </li>
+                                   
                                    
                                 </ul>
                             </li>
@@ -219,7 +73,7 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="musteriDropdown">
                                     <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Müsteri" asp-action="Add">Add Müsteri</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Müsteri" asp-action="Add">Müsteri Ekle</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Müsteri" asp-action="List">Tüm Müsteriler</a>
@@ -228,77 +82,75 @@
                                 </ul>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="saatDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Çalışma Saati Yönetimi
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="saatDropdown">
-
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="CalismaSaati" asp-action="List">Çalışma Çizelgesi</a>
-                                    </li>
-
-                                </ul>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Randevu" asp-action="List">Tüm Randevular</a>
                             </li>
+
+
+                          
+
+                           
                         }
 
                         @if (User.IsInRole("Calisan"))
                         {
-                      
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="calisanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Calisan İşlemleri
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="calisanDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Calisan" asp-action="List">Tüm Çalışanlar</a>
-                                    </li>
-                                  
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Hizmet" asp-action="List">Tüm Hizmetler</a>
-                                    </li>
-                                   
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Musteri" asp-action="List">Tüm Müsteriler</a>
-                                    </li>
-                                   
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="CalismaSaati" asp-action="List">Çalışma Çizelgesi</a>
-                                    </li>
-                                </ul>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Calisan" asp-action="List">Tüm Çalışanlar</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Hizmet" asp-action="List">Tüm Hizmetler</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Müsteri" asp-action="List">Tüm Müsteriler</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CalismaSaati" asp-action="List">Çalışma Çizelgesi</a>
+                            </li>
+
+                           
                         }
 
                         @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("Calisan"))
                         {
                             <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Musteri" asp-action="Profil">Profilim</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="randevuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Randevular
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="randevuDropdown">
-                            <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Add">Randevu Ekle</a></li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Musteri" asp-action="Profil">Profilim</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="randevuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Randevular
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="randevuDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Add">Randevu Ekle</a></li>
                                     <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Musteri_Randevu_List">Randevularımı Gör</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="calisanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Çalışanlar
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="calisanDropdown">
-                            <li><a class="dropdown-item" asp-controller="Calisan" asp-action="List">Çalışanları Gör</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="hizmetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Hizmetler
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="hizmetDropdown">
-                            <li><a class="dropdown-item" asp-controller="Hizmet" asp-action="List">Hizmetleri Gör</a></li>
-                        </ul>
-                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="calisanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Çalışanlar
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="calisanDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Calisan" asp-action="List">Çalışanları Gör</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="hizmetDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Hizmetler
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="hizmetDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Hizmet" asp-action="List">Hizmetleri Gör</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="YapayZekaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Saç Önerisi
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="YapayZekaDropdown">
+                                    <li><a class="dropdown-item" asp-controller="YapayZeka" asp-action="Upload">Saç Önerisi Al</a></li>
+                                </ul>
+                            </li>
+
+                          
                         }
                     </ul>
                     <ul class="navbar-nav">

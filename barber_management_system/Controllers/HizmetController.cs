@@ -29,17 +29,26 @@ namespace barber_management_system.Controllers
         [HttpPost]
         public async Task<IActionResult>Add(AddHizmetViewModel viewModel)
         {
-            var hizmet = new Hizmet()
+            if(ModelState.IsValid)
             {
-                HizmetAd = viewModel.Ad,
-                Fiyat = viewModel.Fiyat,
-                Dakika = viewModel.Dakika
+                var hizmet = new Hizmet
+                {
+                    HizmetAd = viewModel.Ad,
+                    Fiyat = viewModel.Fiyat,
+                    Dakika = viewModel.Dakika
+                };
+                await dbContext.Hizmetler.AddAsync(hizmet);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction("List", "Hizmet");
 
-            };
-            await dbContext.Hizmetler.AddAsync(hizmet);
-            await dbContext.SaveChangesAsync();
-            return RedirectToAction("List", "Hizmet");
-            
+            }
+            else
+            {
+                return View(viewModel);
+            }
+
+
+
         }
 
         [HttpGet]
@@ -74,19 +83,27 @@ namespace barber_management_system.Controllers
             return RedirectToAction("List", "Hizmet");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(Hizmet viewModel)
+        [HttpGet("/Hizmet/Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
+            // Veritabanında silinmek istenen hizmeti buluyoruz
             var hizmet = await dbContext.Hizmetler
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.HizmetID == viewModel.HizmetID);
+                .FirstOrDefaultAsync(x => x.HizmetID == id);
+
+            // Eğer hizmet varsa silme işlemini gerçekleştiriyoruz
             if (hizmet is not null)
             {
-                dbContext.Hizmetler.Remove(viewModel);
+                dbContext.Hizmetler.Remove(hizmet);
                 await dbContext.SaveChangesAsync();
             }
-            return RedirectToAction("List", "Hizmet");
 
+            // Silme işleminden sonra listeye yönlendiriyoruz
+            return RedirectToAction("List", "Hizmet");
         }
+
+
+       
+
     }
 }

@@ -1,9 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model List<barber_management_system.Models.Hizmet>
+﻿@model List<barber_management_system.Models.Hizmet>
+
 <h1>Hizmetler</h1>
 <table class="table">
     <thead>
@@ -12,7 +8,7 @@
             <th>Ad</th>
             <th>Fiyat</th>
             <th>Dakika</th>
-            
+            <th>İşlemler</th>
         </tr>
     </thead>
     <tbody>
@@ -23,10 +19,12 @@
                 <td>@hizmet.HizmetAd</td>
                 <td>@hizmet.Fiyat</td>
                 <td>@hizmet.Dakika</td>
-                <td><a class="btn btn-primary" asp-controller="Hizmet" asp-action="Edit" asp-route-id="@hizmet.HizmetID">Edit</a></td>
-
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-controller="Hizmet" asp-action="Edit" asp-route-id="@hizmet.HizmetID">Güncelle</a>
+                    <a href="@Url.Action("Delete", "Hizmet", new { id = hizmet.HizmetID })" class="btn btn-danger btn-sm">Sil</a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
-<td><a class="btn btn-primary" asp-controller="Hizmet" asp-action="Add">Add</a></td>
+<a class="btn btn-success" asp-controller="Hizmet" asp-action="Add">Yeni Hizmet Ekle</a>

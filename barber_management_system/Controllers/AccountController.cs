@@ -89,20 +89,17 @@ namespace barber_management_system.Controllers
                     if (roles.Contains("Admin"))
                     {
                         return RedirectToAction("Index", "Home");
-                        //// Admin için admin paneline yönlendir
-                        //return RedirectToAction("Index", "AdminPanel");
+                        
                     }
                     else if (roles.Contains("Calisan"))
                     {
                         return RedirectToAction("Index", "Home");
-                        //// Çalışan için çalışan paneline yönlendir
-                        //return RedirectToAction("Index", "CalisanPanel");
+                        
                     }
                     else if (roles.Contains("Musteri"))
                     {
                         return RedirectToAction("Index", "Home");
-                        //// Müşteri için ana sayfaya yönlendir
-                        //return RedirectToAction("Index", "Home");
+                        
                     }
                     return RedirectToAction("Index", "Home");
                 }

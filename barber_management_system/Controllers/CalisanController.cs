@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
+//Burası
 namespace barber_management_system.Controllers
 {
-    [Authorize(Roles = "Admin, Calisan")]
+   
     public class CalisanController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -59,9 +59,13 @@ namespace barber_management_system.Controllers
                 return View(model);
             }
 
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var user = new IdentityUser
+            {
+                UserName = model.Email,
+                Email = model.Email
+            };
 
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 var calisan = new Calisan
@@ -73,21 +77,38 @@ namespace barber_management_system.Controllers
                     IdentityUserId = user.Id
                 };
 
+                // Uzmanlıkların ilişkili hizmetlere eklenmesi
+                foreach (var uzmanlikId in model.SelectedUzmanlık)
+                {
+                    var uzmanlik = await _dbContext.Hizmetler.FindAsync(uzmanlikId);
+                    if (uzmanlik != null)
+                    {
+                        // Uzmanlıkları ekle
+                        calisan.calisanuzmanliklist.Add(new CalisanUzmanlik
+                        {
+                            Calisan = calisan,
+                            Hizmet = uzmanlik
+                        });
+
+                        // Uzmanlığa bağlı hizmetleri otomatik ekle
+                        if (!model.SelectedHizmetler.Contains(uzmanlik.HizmetID))
+                        {
+                            model.SelectedHizmetler.Add(uzmanlik.HizmetID);
+                        }
+                    }
+                }
+
+                // Ek hizmetlerin eklenmesi
                 foreach (var hizmetId in model.SelectedHizmetler)
                 {
                     var hizmet = await _dbContext.Hizmetler.FindAsync(hizmetId);
                     if (hizmet != null)
                     {
-                        calisan.calisanhizmetlist.Add(new CalisanHizmet { Calisan = calisan, Hizmet = hizmet });
-                    }
-                }
-
-                foreach (var hizmetId in model.SelectedUzmanlık)
-                {
-                    var hizmet = await _dbContext.Hizmetler.FindAsync(hizmetId);
-                    if (hizmet != null)
-                    {
-                        calisan.calisanuzmanliklist.Add(new CalisanUzmanlik { Calisan = calisan, Hizmet = hizmet });
+                        calisan.calisanhizmetlist.Add(new CalisanHizmet
+                        {
+                            Calisan = calisan,
+                            Hizmet = hizmet
+                        });
                     }
                 }
 
@@ -96,7 +117,7 @@ namespace barber_management_system.Controllers
 
                 // Kullanıcıyı Calisan rolüne atama
                 await _userManager.AddToRoleAsync(user, "Calisan");
-
+                TempData["SuccessMessage"] = "Çalıan başarıyla eklendi.";
                 return RedirectToAction("List", "Calisan");
             }
             else
@@ -109,7 +130,9 @@ namespace barber_management_system.Controllers
 
             return View(model);
         }
-        [Authorize(Roles = "Admin, Calisan")]
+
+       
+        [Authorize(Roles = "Admin, Calisan,Musteri")]
         [HttpGet]
         public async Task<IActionResult> List()
         {
@@ -307,6 +330,7 @@ namespace barber_management_system.Controllers
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
 
+                TempData["SuccessMessage"] = "Çalıan başarıyla güncellendi";
                 return RedirectToAction(nameof(List));
             }
             catch (Exception ex)
@@ -346,6 +370,7 @@ namespace barber_management_system.Controllers
                 {
                     await _userManager.DeleteAsync(user);
                 }
+                TempData["SuccessMessage"] = "Çalıan başarıyla silindi";
                 return RedirectToAction("List", "Calisan");
             }
             else

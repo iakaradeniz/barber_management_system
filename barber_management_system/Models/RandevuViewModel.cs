@@ -15,6 +15,7 @@ namespace barber_management_system.Models
         public int HizmetId { get; set; }
 
         [Required(ErrorMessage = "Randevu tarihi seçilmesi zorunludur.")]
+
         public DateTime RandevuTarihi { get; set; }
 
         [Required]

@@ -109,14 +109,7 @@ namespace barber_management_system.Data
            
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    base.OnConfiguring(optionsBuilder);
-
-        //    // Uyarıyı bastırmak için
-        //    optionsBuilder.ConfigureWarnings(warnings => warnings
-        //        .Log(RelationalEventId.PendingModelChangesWarning)); // Uyarıyı loglayın
-        //}
+       
 
     }
 }

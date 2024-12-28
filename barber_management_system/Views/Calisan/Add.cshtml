@@ -1,5 +1,5 @@
-﻿@model barber_management_system.Models.CalisanViewModel
-
+﻿
+@model barber_management_system.Models.CalisanViewModel
 @{
     ViewData["Title"] = "Yeni Çalışan Ekle";
 }
@@ -20,47 +20,50 @@ else
             <input asp-for="CalisanAd" class="form-control" />
             <span asp-validation-for="CalisanAd" class="text-danger"></span>
         </div>
+
         <div class="form-group">
             <label asp-for="CalisanSoyad" class="control-label"></label>
             <input asp-for="CalisanSoyad" class="form-control" />
             <span asp-validation-for="CalisanSoyad" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label for="SelectedHizmetler" class="control-label">Hizmetler</label>
-            <select asp-for="SelectedHizmetler" class="form-control select2" multiple>
-               
-                @foreach (var hizmet in Model.Hizmetler)
-                {
-                    <option value="@hizmet.HizmetID"
-                            selected="@Model.SelectedHizmetler.Contains(hizmet.HizmetID)">
-                        @hizmet.HizmetAd
-                    </option>
-                }
-            </select>
-        </div>
+
         <div class="form-group">
             <label for="SelectedUzmanlık" class="control-label">Uzmanlıklar</label>
             <select asp-for="SelectedUzmanlık" class="form-control select2" multiple>
                 <option value="">Uzmanlık Seçiniz</option>
                 @foreach (var hizmet in Model.Hizmetler)
                 {
-                    <option value="@hizmet.HizmetID"
-                            selected="@Model.SelectedUzmanlık.Contains(hizmet.HizmetID)">
+                    <option value="@hizmet.HizmetID" selected="@Model.SelectedUzmanlık.Contains(hizmet.HizmetID)">
                         @hizmet.HizmetAd
                     </option>
                 }
             </select>
         </div>
+
+        <div class="form-group">
+            <label for="SelectedHizmetler" class="control-label">Hizmetler</label>
+            <select asp-for="SelectedHizmetler" class="form-control select2" multiple>
+                @foreach (var hizmet in Model.Hizmetler)
+                {
+                    <option value="@hizmet.HizmetID" selected="@Model.SelectedHizmetler.Contains(hizmet.HizmetID)">
+                        @hizmet.HizmetAd
+                    </option>
+                }
+            </select>
+        </div>
+
         <div class="form-group">
             <label asp-for="Email" class="control-label"></label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
+
         <div class="form-group">
             <label asp-for="Password" class="control-label"></label>
             <input asp-for="Password" class="form-control" type="password" />
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
+
         <div class="form-group">
             <input type="submit" value="Kaydet" class="btn btn-primary" />
         </div>
